@@ -1,32 +1,41 @@
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import NotFound from "@/pages/NotFound";
-import { Route, Switch } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
-import DashboardLayout from "./components/DashboardLayout";
-import Home from "./pages/Home";
-import EmailPage from "./pages/EmailPage";
-import SlackPage from "./pages/SlackPage";
-import AsanaPage from "./pages/AsanaPage";
-import CalendarPage from "./pages/CalendarPage";
-import SettingsPage from "./pages/SettingsPage";
+import OlympusScreen from "./pages/OlympusScreen";
+import { useAuth } from "@/_core/hooks/useAuth";
+import { getLoginUrl } from "@/const";
+import { Button } from "@/components/ui/button";
+import { DashboardLayoutSkeleton } from "./components/DashboardLayoutSkeleton";
 
-function Router() {
-  return (
-    <DashboardLayout>
-      <Switch>
-        <Route path="/" component={Home} />
-        <Route path="/email" component={EmailPage} />
-        <Route path="/slack" component={SlackPage} />
-        <Route path="/asana" component={AsanaPage} />
-        <Route path="/calendar" component={CalendarPage} />
-        <Route path="/settings" component={SettingsPage} />
-        <Route path="/404" component={NotFound} />
-        <Route component={NotFound} />
-      </Switch>
-    </DashboardLayout>
-  );
+function AuthGate() {
+  const { user, loading } = useAuth();
+
+  if (loading) return <DashboardLayoutSkeleton />;
+
+  if (!user) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-background">
+        <div className="flex flex-col items-center gap-6 p-8 max-w-md w-full">
+          <h1 className="font-headline text-4xl font-semibold tracking-tight text-foreground">
+            Olympus
+          </h1>
+          <p className="text-sm text-muted-foreground text-center font-body">
+            Your personal command center. Sign in to begin.
+          </p>
+          <Button
+            onClick={() => { window.location.href = getLoginUrl(); }}
+            size="lg"
+            className="w-full"
+          >
+            Sign in
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  return <OlympusScreen />;
 }
 
 function App() {
@@ -35,7 +44,7 @@ function App() {
       <ThemeProvider defaultTheme="light">
         <TooltipProvider>
           <Toaster />
-          <Router />
+          <AuthGate />
         </TooltipProvider>
       </ThemeProvider>
     </ErrorBoundary>

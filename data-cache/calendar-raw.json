@@ -1,0 +1,1403 @@
+{
+  "success": true,
+  "result": [
+    {
+      "kind": "calendar#event",
+      "etag": "\"3546975612504862\"",
+      "id": "v6j7pk69pcq6u2jabd9rqfdk8g",
+      "status": "confirmed",
+      "htmlLink": "https://www.google.com/calendar/event?eid=djZqN3BrNjlwY3E2dTJqYWJkOXJxZmRrOGcgYXJlZWJAd2l0aGluLmNv",
+      "created": "2026-01-29T13:46:05.000Z",
+      "updated": "2026-03-14T11:30:06.252Z",
+      "summary": "Anastasia Sorokina - OOO",
+      "description": "<meta name=\"rteConfig\" content=\"{&quot;version&quot;:&quot;0.179.0&quot;}\"><p dir=\"ltr\" style=\"font-style:normal;font-weight:400;font-size:11pt;line-height:1.38;font-family:&quot;Basel Grotesk&quot;,Arial,sans-serif;margin-right:0px;padding:0px;margin-top:0px;margin-bottom:0px;\"><span data-node=\"p-variable\" data-name=\"trigger|base_object|role.user_cache.preferred_first_name\" style=\"\">Anastasia</span><span style=\"white-space:pre-wrap;\"> </span><span data-node=\"p-variable\" data-name=\"trigger|base_object|role.user_cache.preferred_last_name\" style=\"\">Sorokina</span><span style=\"white-space:pre-wrap;\">  is on time off from </span><span data-node=\"p-variable\" data-name=\"trigger|base_object|start_date\" style=\"\">1/29/26</span><span style=\"white-space:pre-wrap;\">  to </span><span data-node=\"p-variable\" data-name=\"trigger|base_object|end_date\" style=\"\">5/26/26</span><span style=\"white-space:pre-wrap;\">  for a total of </span><span data-node=\"p-variable\" data-name=\"trigger|base_object|leave_duration_hours\" style=\"\">664.00</span><span style=\"white-space:pre-wrap;\">   hours</span></p>",
+      "creator": {
+        "email": "jhon.pena@within.co"
+      },
+      "organizer": {
+        "email": "anastasia.sorokina@within.co"
+      },
+      "start": {
+        "date": "2026-01-29"
+      },
+      "end": {
+        "date": "2026-05-27"
+      },
+      "transparency": "transparent",
+      "visibility": "public",
+      "iCalUID": "v6j7pk69pcq6u2jabd9rqfdk8g@google.com",
+      "sequence": 0,
+      "attendees": [
+        {
+          "email": "ki@within.co",
+          "responseStatus": "needsAction"
+        },
+        {
+          "email": "kaveh@within.co",
+          "responseStatus": "declined"
+        },
+        {
+          "email": "jackie@within.co",
+          "responseStatus": "needsAction"
+        },
+        {
+          "email": "areeb@within.co",
+          "self": true,
+          "responseStatus": "needsAction"
+        },
+        {
+          "email": "asher@within.co",
+          "responseStatus": "needsAction"
+        },
+        {
+          "email": "anastasia.sorokina@within.co",
+          "organizer": true,
+          "responseStatus": "needsAction"
+        }
+      ],
+      "guestsCanModify": true,
+      "reminders": {
+        "useDefault": false,
+        "overrides": [
+          {
+            "method": "popup",
+            "minutes": 10
+          }
+        ]
+      },
+      "eventType": "default"
+    },
+    {
+      "kind": "calendar#event",
+      "etag": "\"3546975608549310\"",
+      "id": "j0jlcm06cmanll2ilt2pi11494",
+      "status": "confirmed",
+      "htmlLink": "https://www.google.com/calendar/event?eid=ajBqbGNtMDZjbWFubGwyaWx0MnBpMTE0OTQgYXJlZWJAd2l0aGluLmNv",
+      "created": "2026-01-24T18:47:19.000Z",
+      "updated": "2026-03-14T11:30:04.274Z",
+      "summary": "Anastasia Sorokina - OOO",
+      "description": "<meta name=\"rteConfig\" content=\"{&quot;version&quot;:&quot;0.179.0&quot;}\"><p dir=\"ltr\" style=\"font-style:normal;font-weight:400;font-size:11pt;line-height:1.38;font-family:&quot;Basel Grotesk&quot;,Arial,sans-serif;margin-right:0px;padding:0px;margin-top:0px;margin-bottom:0px;\"><span data-node=\"p-variable\" data-name=\"trigger|base_object|role.user_cache.preferred_first_name\" style=\"\">Anastasia</span><span style=\"white-space:pre-wrap;\"> </span><span data-node=\"p-variable\" data-name=\"trigger|base_object|role.user_cache.preferred_last_name\" style=\"\">Sorokina</span><span style=\"white-space:pre-wrap;\">  is on time off from </span><span data-node=\"p-variable\" data-name=\"trigger|base_object|start_date\" style=\"\">2/2/26</span><span style=\"white-space:pre-wrap;\">  to </span><span data-node=\"p-variable\" data-name=\"trigger|base_object|end_date\" style=\"\">5/26/26</span><span style=\"white-space:pre-wrap;\">  for a total of </span><span data-node=\"p-variable\" data-name=\"trigger|base_object|leave_duration_hours\" style=\"\">648.00</span><span style=\"white-space:pre-wrap;\">   hours</span></p>",
+      "creator": {
+        "email": "jhon.pena@within.co"
+      },
+      "organizer": {
+        "email": "anastasia.sorokina@within.co"
+      },
+      "start": {
+        "date": "2026-02-02"
+      },
+      "end": {
+        "date": "2026-05-27"
+      },
+      "transparency": "transparent",
+      "visibility": "public",
+      "iCalUID": "j0jlcm06cmanll2ilt2pi11494@google.com",
+      "sequence": 0,
+      "attendees": [
+        {
+          "email": "ki@within.co",
+          "responseStatus": "needsAction"
+        },
+        {
+          "email": "kaveh@within.co",
+          "responseStatus": "declined"
+        },
+        {
+          "email": "jackie@within.co",
+          "responseStatus": "needsAction"
+        },
+        {
+          "email": "areeb@within.co",
+          "self": true,
+          "responseStatus": "needsAction"
+        },
+        {
+          "email": "asher@within.co",
+          "responseStatus": "declined"
+        },
+        {
+          "email": "anastasia.sorokina@within.co",
+          "organizer": true,
+          "responseStatus": "needsAction"
+        }
+      ],
+      "guestsCanModify": true,
+      "reminders": {
+        "useDefault": false,
+        "overrides": [
+          {
+            "method": "popup",
+            "minutes": 10
+          }
+        ]
+      },
+      "eventType": "default"
+    },
+    {
+      "kind": "calendar#event",
+      "etag": "\"3548040962791486\"",
+      "id": "12ngb8c7m5ogfkmlivqi0p1bvs",
+      "status": "confirmed",
+      "htmlLink": "https://www.google.com/calendar/event?eid=MTJuZ2I4YzdtNW9nZmttbGl2cWkwcDFidnMgYXJlZWJAd2l0aGluLmNv",
+      "created": "2026-02-06T15:07:21.000Z",
+      "updated": "2026-03-20T15:28:01.395Z",
+      "summary": "Fitz OOO",
+      "creator": {
+        "email": "quinn@within.co"
+      },
+      "organizer": {
+        "email": "quinn@within.co"
+      },
+      "start": {
+        "date": "2026-03-15"
+      },
+      "end": {
+        "date": "2026-03-24"
+      },
+      "transparency": "transparent",
+      "iCalUID": "12ngb8c7m5ogfkmlivqi0p1bvs@google.com",
+      "sequence": 0,
+      "attendees": [
+        {
+          "email": "quinn@within.co",
+          "organizer": true,
+          "responseStatus": "accepted"
+        },
+        {
+          "email": "samuel.incardona@within.co",
+          "responseStatus": "needsAction"
+        },
+        {
+          "email": "marisa@within.co",
+          "responseStatus": "needsAction"
+        },
+        {
+          "email": "jackie@within.co",
+          "responseStatus": "needsAction"
+        },
+        {
+          "email": "ashley.conner@within.co",
+          "responseStatus": "accepted"
+        },
+        {
+          "email": "mike.lackman@within.co",
+          "responseStatus": "needsAction"
+        },
+        {
+          "email": "areeb@within.co",
+          "self": true,
+          "responseStatus": "needsAction"
+        },
+        {
+          "email": "danielle@within.co",
+          "responseStatus": "needsAction"
+        },
+        {
+          "email": "joe@within.co",
+          "displayName": "Joseph Yakuel",
+          "responseStatus": "needsAction"
+        },
+        {
+          "email": "creative@within.co",
+          "displayName": "Creative Team",
+          "responseStatus": "needsAction"
+        },
+        {
+          "email": "fernanda.cesar@within.co",
+          "responseStatus": "needsAction"
+        }
+      ],
+      "reminders": {
+        "useDefault": false,
+        "overrides": [
+          {
+            "method": "popup",
+            "minutes": 10
+          }
+        ]
+      },
+      "eventType": "default"
+    },
+    {
+      "kind": "calendar#event",
+      "etag": "\"3548122590343518\"",
+      "id": "p9g76enql1930f3ac0l716brto",
+      "status": "confirmed",
+      "htmlLink": "https://www.google.com/calendar/event?eid=cDlnNzZlbnFsMTkzMGYzYWMwbDcxNmJydG8gYXJlZWJAd2l0aGluLmNv",
+      "created": "2026-02-03T12:38:12.000Z",
+      "updated": "2026-03-21T02:48:15.171Z",
+      "summary": "Amanda Liu - OOO",
+      "description": "<meta name=\"rteConfig\" content=\"{&quot;version&quot;:&quot;0.179.0&quot;}\"><p dir=\"ltr\" style=\"font-style:normal;font-weight:400;font-size:11pt;line-height:1.38;font-family:&quot;Basel Grotesk&quot;,Arial,sans-serif;margin-right:0px;padding:0px;margin-top:0px;margin-bottom:0px;\"><span data-node=\"p-variable\" data-name=\"trigger|base_object|role.user_cache.preferred_first_name\" style=\"\">Amanda</span><span style=\"white-space:pre-wrap;\"> </span><span data-node=\"p-variable\" data-name=\"trigger|base_object|role.user_cache.preferred_last_name\" style=\"\">Liu</span><span style=\"white-space:pre-wrap;\">  is on time off from </span><span data-node=\"p-variable\" data-name=\"trigger|base_object|start_date\" style=\"\">3/23/26</span><span style=\"white-space:pre-wrap;\">  to </span><span data-node=\"p-variable\" data-name=\"trigger|base_object|end_date\" style=\"\">3/23/26</span><span style=\"white-space:pre-wrap;\">  for a total of </span><span data-node=\"p-variable\" data-name=\"trigger|base_object|leave_duration_hours\" style=\"\">8.00</span><span style=\"white-space:pre-wrap;\">   hours</span></p>",
+      "creator": {
+        "email": "jhon.pena@within.co"
+      },
+      "organizer": {
+        "email": "amanda@within.co"
+      },
+      "start": {
+        "date": "2026-03-23"
+      },
+      "end": {
+        "date": "2026-03-24"
+      },
+      "transparency": "transparent",
+      "visibility": "public",
+      "iCalUID": "p9g76enql1930f3ac0l716brto@google.com",
+      "sequence": 0,
+      "attendees": [
+        {
+          "email": "amanda@within.co",
+          "organizer": true,
+          "responseStatus": "declined",
+          "comment": "Declined because I am out of office"
+        },
+        {
+          "email": "muskan.katoch@within.co",
+          "responseStatus": "needsAction"
+        },
+        {
+          "email": "gabriel.cure@within.co",
+          "responseStatus": "needsAction"
+        },
+        {
+          "email": "alec@within.co",
+          "responseStatus": "needsAction"
+        },
+        {
+          "email": "bhavya.rachhoya@within.co",
+          "responseStatus": "needsAction"
+        },
+        {
+          "email": "kelly.wang@within.co",
+          "responseStatus": "needsAction"
+        },
+        {
+          "email": "matthew.au@within.co",
+          "responseStatus": "declined",
+          "comment": "Declined because I am out of office"
+        },
+        {
+          "email": "olivia.lin@within.co",
+          "responseStatus": "declined",
+          "comment": "Declined because I am out of office"
+        },
+        {
+          "email": "areeb@within.co",
+          "self": true,
+          "responseStatus": "needsAction"
+        },
+        {
+          "email": "karola.gallardo@within.co",
+          "responseStatus": "needsAction"
+        },
+        {
+          "email": "anushka.khemka@within.co",
+          "responseStatus": "needsAction"
+        },
+        {
+          "email": "simiao.ye@within.co",
+          "responseStatus": "needsAction"
+        },
+        {
+          "email": "soumya.katakam@within.co",
+          "responseStatus": "needsAction"
+        },
+        {
+          "email": "amy.halperin@within.co",
+          "responseStatus": "declined",
+          "comment": "Declined because I am out of office"
+        },
+        {
+          "email": "nestig-integrated@within.co",
+          "displayName": "Nestig Integrated Media Team",
+          "responseStatus": "needsAction"
+        },
+        {
+          "email": "sweetjuly@within.co",
+          "displayName": "Sweet July",
+          "responseStatus": "needsAction"
+        }
+      ],
+      "guestsCanModify": true,
+      "reminders": {
+        "useDefault": false,
+        "overrides": [
+          {
+            "method": "popup",
+            "minutes": 10
+          }
+        ]
+      },
+      "eventType": "default"
+    },
+    {
+      "kind": "calendar#event",
+      "etag": "\"3548699527991998\"",
+      "id": "2oj58s5pqah9h177o8t520l04r_20260324T134500Z",
+      "status": "confirmed",
+      "htmlLink": "https://www.google.com/calendar/event?eid=Mm9qNThzNXBxYWg5aDE3N284dDUyMGwwNHJfMjAyNjAzMjRUMTM0NTAwWiBhcmVlYkB3aXRoaW4uY28",
+      "created": "2026-02-10T23:28:06.000Z",
+      "updated": "2026-03-24T10:56:03.995Z",
+      "summary": "Hit the Gas!",
+      "creator": {
+        "email": "patrick.ngo@within.co"
+      },
+      "organizer": {
+        "email": "patrick.ngo@within.co"
+      },
+      "start": {
+        "dateTime": "2026-03-24T09:45:00-04:00",
+        "timeZone": "America/Chicago"
+      },
+      "end": {
+        "dateTime": "2026-03-24T10:00:00-04:00",
+        "timeZone": "America/Chicago"
+      },
+      "recurringEventId": "2oj58s5pqah9h177o8t520l04r_R20260224T144500",
+      "originalStartTime": {
+        "dateTime": "2026-03-24T09:45:00-04:00",
+        "timeZone": "America/Chicago"
+      },
+      "iCalUID": "2oj58s5pqah9h177o8t520l04r_R20260224T144500@google.com",
+      "sequence": 0,
+      "attendees": [
+        {
+          "email": "veronica.martinez@within.co",
+          "responseStatus": "accepted"
+        },
+        {
+          "email": "daniel@within.co",
+          "responseStatus": "accepted"
+        },
+        {
+          "email": "areeb@within.co",
+          "self": true,
+          "responseStatus": "accepted"
+        },
+        {
+          "email": "patrick.ngo@within.co",
+          "organizer": true,
+          "responseStatus": "accepted"
+        },
+        {
+          "email": "maria@within.co",
+          "responseStatus": "accepted"
+        }
+      ],
+      "hangoutLink": "https://meet.google.com/mpp-zchg-kqn",
+      "conferenceData": {
+        "entryPoints": [
+          {
+            "entryPointType": "video",
+            "uri": "https://meet.google.com/mpp-zchg-kqn",
+            "label": "meet.google.com/mpp-zchg-kqn"
+          },
+          {
+            "entryPointType": "more",
+            "uri": "https://tel.meet/mpp-zchg-kqn?pin=5672823380006",
+            "pin": "5672823380006"
+          },
+          {
+            "regionCode": "US",
+            "entryPointType": "phone",
+            "uri": "tel:+1-414-436-8353",
+            "label": "+1 414-436-8353",
+            "pin": "646765529"
+          }
+        ],
+        "conferenceSolution": {
+          "key": {
+            "type": "hangoutsMeet"
+          },
+          "name": "Google Meet",
+          "iconUri": "https://fonts.gstatic.com/s/i/productlogos/meet_2020q4/v6/web-512dp/logo_meet_2020q4_color_2x_web_512dp.png"
+        },
+        "conferenceId": "mpp-zchg-kqn"
+      },
+      "reminders": {
+        "useDefault": true
+      },
+      "eventType": "default"
+    },
+    {
+      "kind": "calendar#event",
+      "etag": "\"3548221824174046\"",
+      "id": "1d9dq8ret45ibjhetkco1d0prc_20260320T170000Z",
+      "status": "confirmed",
+      "htmlLink": "https://www.google.com/calendar/event?eid=MWQ5ZHE4cmV0NDVpYmpoZXRrY28xZDBwcmNfMjAyNjAzMjBUMTcwMDAwWiBhcmVlYkB3aXRoaW4uY28",
+      "created": "2026-02-10T12:31:48.000Z",
+      "updated": "2026-03-21T16:35:12.087Z",
+      "summary": "Areeb / Ian Bi-Weekly TB",
+      "location": "HQ-6-Prosperity (7)",
+      "creator": {
+        "email": "fernanda.cesar@within.co"
+      },
+      "organizer": {
+        "email": "areeb@within.co",
+        "self": true
+      },
+      "start": {
+        "dateTime": "2026-03-24T11:00:00-04:00",
+        "timeZone": "America/New_York"
+      },
+      "end": {
+        "dateTime": "2026-03-24T11:15:00-04:00",
+        "timeZone": "America/New_York"
+      },
+      "recurringEventId": "1d9dq8ret45ibjhetkco1d0prc",
+      "originalStartTime": {
+        "dateTime": "2026-03-20T13:00:00-04:00",
+        "timeZone": "America/New_York"
+      },
+      "iCalUID": "1d9dq8ret45ibjhetkco1d0prc@google.com",
+      "sequence": 1,
+      "attendees": [
+        {
+          "email": "c_18895q2niva8mjlajt5rbikgjh10o@resource.calendar.google.com",
+          "displayName": "HQ-6-Prosperity (7)",
+          "resource": true,
+          "responseStatus": "accepted"
+        },
+        {
+          "email": "areeb@within.co",
+          "organizer": true,
+          "self": true,
+          "responseStatus": "accepted"
+        },
+        {
+          "email": "ian.huang@within.co",
+          "responseStatus": "accepted"
+        }
+      ],
+      "hangoutLink": "https://meet.google.com/guh-gxhi-aed",
+      "conferenceData": {
+        "entryPoints": [
+          {
+            "entryPointType": "video",
+            "uri": "https://meet.google.com/guh-gxhi-aed",
+            "label": "meet.google.com/guh-gxhi-aed"
+          },
+          {
+            "entryPointType": "more",
+            "uri": "https://tel.meet/guh-gxhi-aed?pin=9967264163862",
+            "pin": "9967264163862"
+          },
+          {
+            "regionCode": "BR",
+            "entryPointType": "phone",
+            "uri": "tel:+55-41-4560-9808",
+            "label": "+55 41 4560-9808",
+            "pin": "748439185"
+          }
+        ],
+        "conferenceSolution": {
+          "key": {
+            "type": "hangoutsMeet"
+          },
+          "name": "Google Meet",
+          "iconUri": "https://fonts.gstatic.com/s/i/productlogos/meet_2020q4/v6/web-512dp/logo_meet_2020q4_color_2x_web_512dp.png"
+        },
+        "conferenceId": "guh-gxhi-aed"
+      },
+      "guestsCanModify": true,
+      "reminders": {
+        "useDefault": true
+      },
+      "eventType": "default"
+    },
+    {
+      "kind": "calendar#event",
+      "etag": "\"3548731229366270\"",
+      "id": "sb9q5vl86c0dvfpioq9sbd898g",
+      "status": "confirmed",
+      "htmlLink": "https://www.google.com/calendar/event?eid=c2I5cTV2bDg2YzBkdmZwaW9xOXNiZDg5OGcgYXJlZWJAd2l0aGluLmNv",
+      "created": "2026-03-18T22:57:53.000Z",
+      "updated": "2026-03-24T15:20:14.683Z",
+      "summary": "Virtual Interview with Christen Borg - Paid Media Manager",
+      "description": "<a href=\"https://app7.greenhouse.io/guides/4469854007/people/63777643007/interview?application_id=70252544007\" target=\"_blank\">Internal Only</a>",
+      "creator": {
+        "email": "jobs@within.co"
+      },
+      "organizer": {
+        "email": "jobs@within.co"
+      },
+      "start": {
+        "dateTime": "2026-03-24T11:15:00-04:00",
+        "timeZone": "America/New_York"
+      },
+      "end": {
+        "dateTime": "2026-03-24T11:45:00-04:00",
+        "timeZone": "America/New_York"
+      },
+      "iCalUID": "sb9q5vl86c0dvfpioq9sbd898g@google.com",
+      "sequence": 1,
+      "attendees": [
+        {
+          "email": "jobs@within.co",
+          "organizer": true,
+          "responseStatus": "accepted"
+        },
+        {
+          "email": "areeb@within.co",
+          "self": true,
+          "responseStatus": "accepted"
+        },
+        {
+          "email": "chris10borg@gmail.com",
+          "responseStatus": "needsAction"
+        },
+        {
+          "email": "marc.bautista@within.co",
+          "responseStatus": "needsAction"
+        },
+        {
+          "email": "schedule@kelp.greenhouse.io",
+          "responseStatus": "needsAction"
+        }
+      ],
+      "hangoutLink": "https://meet.google.com/yqa-ahdy-rit",
+      "conferenceData": {
+        "createRequest": {
+          "requestId": "1773874673",
+          "conferenceSolutionKey": {
+            "type": "hangoutsMeet"
+          },
+          "status": {
+            "statusCode": "success"
+          }
+        },
+        "entryPoints": [
+          {
+            "entryPointType": "video",
+            "uri": "https://meet.google.com/yqa-ahdy-rit",
+            "label": "meet.google.com/yqa-ahdy-rit"
+          },
+          {
+            "entryPointType": "more",
+            "uri": "https://tel.meet/yqa-ahdy-rit?pin=2595543448392",
+            "pin": "2595543448392"
+          },
+          {
+            "regionCode": "US",
+            "entryPointType": "phone",
+            "uri": "tel:+1-252-394-8750",
+            "label": "+1 252-394-8750",
+            "pin": "533888294"
+          }
+        ],
+        "conferenceSolution": {
+          "key": {
+            "type": "hangoutsMeet"
+          },
+          "name": "Google Meet",
+          "iconUri": "https://fonts.gstatic.com/s/i/productlogos/meet_2020q4/v6/web-512dp/logo_meet_2020q4_color_2x_web_512dp.png"
+        },
+        "conferenceId": "yqa-ahdy-rit"
+      },
+      "reminders": {
+        "useDefault": true
+      },
+      "eventType": "default"
+    },
+    {
+      "kind": "calendar#event",
+      "etag": "\"3548548335605470\"",
+      "id": "osudrseh7037ukha750afej8k0",
+      "status": "confirmed",
+      "htmlLink": "https://www.google.com/calendar/event?eid=b3N1ZHJzZWg3MDM3dWtoYTc1MGFmZWo4azAgYXJlZWJAd2l0aGluLmNv",
+      "created": "2026-03-23T12:04:38.000Z",
+      "updated": "2026-03-23T13:56:07.802Z",
+      "summary": "Call with Morgan Gilligan - Paid Media Manager",
+      "description": "<a href=\"https://app7.greenhouse.io/guides/4499437007/people/62745573007/interview?application_id=69161827007\" target=\"_blank\">Internal Only</a>",
+      "creator": {
+        "email": "patrick.ngo@within.co"
+      },
+      "organizer": {
+        "email": "patrick.ngo@within.co"
+      },
+      "start": {
+        "dateTime": "2026-03-24T11:45:00-04:00",
+        "timeZone": "America/Chicago"
+      },
+      "end": {
+        "dateTime": "2026-03-24T12:00:00-04:00",
+        "timeZone": "America/Chicago"
+      },
+      "iCalUID": "osudrseh7037ukha750afej8k0@google.com",
+      "sequence": 0,
+      "attendees": [
+        {
+          "email": "areeb@within.co",
+          "self": true,
+          "responseStatus": "accepted"
+        },
+        {
+          "email": "patrick.ngo@within.co",
+          "organizer": true,
+          "responseStatus": "accepted"
+        },
+        {
+          "email": "gilliganmorgan@gmail.com",
+          "responseStatus": "accepted"
+        },
+        {
+          "email": "schedule@kelp.greenhouse.io",
+          "responseStatus": "needsAction"
+        }
+      ],
+      "hangoutLink": "https://meet.google.com/son-umia-uvp",
+      "conferenceData": {
+        "createRequest": {
+          "requestId": "1774267477",
+          "conferenceSolutionKey": {
+            "type": "hangoutsMeet"
+          },
+          "status": {
+            "statusCode": "success"
+          }
+        },
+        "entryPoints": [
+          {
+            "entryPointType": "video",
+            "uri": "https://meet.google.com/son-umia-uvp",
+            "label": "meet.google.com/son-umia-uvp"
+          },
+          {
+            "entryPointType": "more",
+            "uri": "https://tel.meet/son-umia-uvp?pin=4945657841426",
+            "pin": "4945657841426"
+          },
+          {
+            "regionCode": "US",
+            "entryPointType": "phone",
+            "uri": "tel:+1-254-863-1391",
+            "label": "+1 254-863-1391",
+            "pin": "721099017"
+          }
+        ],
+        "conferenceSolution": {
+          "key": {
+            "type": "hangoutsMeet"
+          },
+          "name": "Google Meet",
+          "iconUri": "https://fonts.gstatic.com/s/i/productlogos/meet_2020q4/v6/web-512dp/logo_meet_2020q4_color_2x_web_512dp.png"
+        },
+        "conferenceId": "son-umia-uvp"
+      },
+      "reminders": {
+        "useDefault": true
+      },
+      "eventType": "default"
+    },
+    {
+      "kind": "calendar#event",
+      "etag": "\"3548736338601726\"",
+      "id": "bvabs98h1t5jlaji112egpgif9_20260324T160000Z",
+      "status": "confirmed",
+      "htmlLink": "https://www.google.com/calendar/event?eid=YnZhYnM5OGgxdDVqbGFqaTExMmVncGdpZjlfMjAyNjAzMjRUMTYwMDAwWiBhcmVlYkB3aXRoaW4uY28",
+      "created": "2025-04-07T14:23:21.000Z",
+      "updated": "2026-03-24T16:02:49.300Z",
+      "summary": "[EXT] CWC Weekly Strategic Working Session",
+      "description": "Discuss current project status & use working session to align and plan for future briefs and discuss optimal strategy based on the CWC marketing calendar.",
+      "colorId": "9",
+      "creator": {
+        "email": "langston.mccullough@within.co"
+      },
+      "organizer": {
+        "email": "sabrina.nie@within.co"
+      },
+      "start": {
+        "dateTime": "2026-03-24T12:00:00-04:00",
+        "timeZone": "America/New_York"
+      },
+      "end": {
+        "dateTime": "2026-03-24T12:30:00-04:00",
+        "timeZone": "America/New_York"
+      },
+      "recurringEventId": "bvabs98h1t5jlaji112egpgif9_R20260324T160000",
+      "originalStartTime": {
+        "dateTime": "2026-03-24T12:00:00-04:00",
+        "timeZone": "America/New_York"
+      },
+      "iCalUID": "bvabs98h1t5jlaji112egpgif9_R20260324T160000@google.com",
+      "sequence": 1,
+      "attendees": [
+        {
+          "email": "valeria.germanova@within.co",
+          "responseStatus": "accepted"
+        },
+        {
+          "email": "langston.mccullough@within.co",
+          "responseStatus": "accepted"
+        },
+        {
+          "email": "jonathan.schoelkopf@within.co",
+          "responseStatus": "accepted"
+        },
+        {
+          "email": "maria.manrique@within.co",
+          "responseStatus": "accepted"
+        },
+        {
+          "email": "sabrina.nie@within.co",
+          "organizer": true,
+          "responseStatus": "accepted"
+        },
+        {
+          "email": "ecentkowski@coldwatercreek.com",
+          "responseStatus": "accepted"
+        },
+        {
+          "email": "areeb@within.co",
+          "self": true,
+          "optional": true,
+          "responseStatus": "declined"
+        },
+        {
+          "email": "katrina.alonso@within.co",
+          "responseStatus": "accepted"
+        },
+        {
+          "email": "kbrophy@coldwatercreek.com",
+          "responseStatus": "accepted"
+        }
+      ],
+      "hangoutLink": "https://meet.google.com/rzm-juri-ovf",
+      "conferenceData": {
+        "entryPoints": [
+          {
+            "entryPointType": "video",
+            "uri": "https://meet.google.com/rzm-juri-ovf",
+            "label": "meet.google.com/rzm-juri-ovf"
+          },
+          {
+            "entryPointType": "more",
+            "uri": "https://tel.meet/rzm-juri-ovf?pin=3517533689707",
+            "pin": "3517533689707"
+          },
+          {
+            "regionCode": "MX",
+            "entryPointType": "phone",
+            "uri": "tel:+52-55-8421-0898",
+            "label": "+52 55 8421 0898",
+            "pin": "3517533689707"
+          }
+        ],
+        "conferenceSolution": {
+          "key": {
+            "type": "hangoutsMeet"
+          },
+          "name": "Google Meet",
+          "iconUri": "https://fonts.gstatic.com/s/i/productlogos/meet_2020q4/v6/web-512dp/logo_meet_2020q4_color_2x_web_512dp.png"
+        },
+        "conferenceId": "rzm-juri-ovf"
+      },
+      "reminders": {
+        "useDefault": true
+      },
+      "eventType": "default"
+    },
+    {
+      "kind": "calendar#event",
+      "etag": "\"3548738190076478\"",
+      "id": "5hod7fg875ofe1f712flg2p2o4",
+      "status": "confirmed",
+      "htmlLink": "https://www.google.com/calendar/event?eid=NWhvZDdmZzg3NW9mZTFmNzEyZmxnMnAybzQgYXJlZWJAd2l0aGluLmNv",
+      "created": "2026-03-23T15:53:21.000Z",
+      "updated": "2026-03-24T16:18:15.038Z",
+      "summary": "Vans Staffing TB",
+      "location": "HQ-6-Growth (10) [TV]",
+      "creator": {
+        "email": "megan.burke@within.co"
+      },
+      "organizer": {
+        "email": "megan.burke@within.co"
+      },
+      "start": {
+        "dateTime": "2026-03-24T12:30:00-04:00",
+        "timeZone": "America/New_York"
+      },
+      "end": {
+        "dateTime": "2026-03-24T13:00:00-04:00",
+        "timeZone": "America/New_York"
+      },
+      "iCalUID": "5hod7fg875ofe1f712flg2p2o4@google.com",
+      "sequence": 0,
+      "attendees": [
+        {
+          "email": "megan.burke@within.co",
+          "organizer": true,
+          "responseStatus": "accepted"
+        },
+        {
+          "email": "miri@within.co",
+          "responseStatus": "accepted"
+        },
+        {
+          "email": "areeb@within.co",
+          "self": true,
+          "responseStatus": "accepted"
+        },
+        {
+          "email": "c_1886eu5agsgemholh45bdgkcnqeg2@resource.calendar.google.com",
+          "displayName": "HQ-6-Growth (10) [TV]",
+          "resource": true,
+          "responseStatus": "accepted"
+        }
+      ],
+      "hangoutLink": "https://meet.google.com/bei-ovyh-ngm",
+      "conferenceData": {
+        "entryPoints": [
+          {
+            "entryPointType": "video",
+            "uri": "https://meet.google.com/bei-ovyh-ngm",
+            "label": "meet.google.com/bei-ovyh-ngm"
+          },
+          {
+            "entryPointType": "more",
+            "uri": "https://tel.meet/bei-ovyh-ngm?pin=1165968083875",
+            "pin": "1165968083875"
+          },
+          {
+            "regionCode": "US",
+            "entryPointType": "phone",
+            "uri": "tel:+1-513-816-0724",
+            "label": "+1 513-816-0724",
+            "pin": "643607655"
+          }
+        ],
+        "conferenceSolution": {
+          "key": {
+            "type": "hangoutsMeet"
+          },
+          "name": "Google Meet",
+          "iconUri": "https://fonts.gstatic.com/s/i/productlogos/meet_2020q4/v6/web-512dp/logo_meet_2020q4_color_2x_web_512dp.png"
+        },
+        "conferenceId": "bei-ovyh-ngm"
+      },
+      "guestsCanModify": true,
+      "reminders": {
+        "useDefault": true
+      },
+      "eventType": "default"
+    },
+    {
+      "kind": "calendar#event",
+      "etag": "\"3548743574933022\"",
+      "id": "hc11ubjca9r9blok3dveirs25i_20260324T163000Z",
+      "status": "confirmed",
+      "htmlLink": "https://www.google.com/calendar/event?eid=aGMxMXViamNhOXI5YmxvazNkdmVpcnMyNWlfMjAyNjAzMjRUMTYzMDAwWiBhcmVlYkB3aXRoaW4uY28",
+      "created": "2025-09-13T00:42:55.000Z",
+      "updated": "2026-03-24T17:03:07.466Z",
+      "summary": "Programmatic Office Hours *Optional*",
+      "description": "<p><b>Optional | Open to the Digital Department</b></p><p>An open forum for programmatic Q&amp;A, strategic guidance, and campaign troubleshooting. </p><p><a href=\"https://docs.google.com/document/d/1RyTj9agVq6oB23puVZHv7aoVoEy295wYQhieVTGrYN0/edit?tab=t.0#heading=h.5urs51melqhl\">ADD TO AGENDA HERE.</a></p><p>Use this time to dive into topics like:</p><p></p><ul><li>DSPs (e.g. The Trade Desk, DV360, Amazon)</li><li>CTV/OTT, OLV, DOOH, display, audio (music &amp; podcast)</li><li>Inventory Targeting </li><li>Audience segmentation</li><li>Bidding approaches and pacing tactics</li><li>Overall best practices by channel</li><li>Testing frameworks and measurement strategy</li><li>Exploring new partners, novel campaign ideas</li><li>Brushing up talk track for client pitches, reporting decks</li></ul><p></p><p>To make the most of our time,<b> please come prepared and</b> <b>send over any questions, decks, or campaigns you’d like to discuss ahead of time</b>.</p><p>Whether you're planning, optimizing, or experimenting, stop by for practical, hands-on support! :)<br></p><br>This call will be recorded for note taking and as a resource for the both of us.",
+      "creator": {
+        "email": "piper.brantley@within.co"
+      },
+      "organizer": {
+        "email": "piper.brantley@within.co"
+      },
+      "start": {
+        "dateTime": "2026-03-24T12:30:00-04:00",
+        "timeZone": "America/New_York"
+      },
+      "end": {
+        "dateTime": "2026-03-24T13:00:00-04:00",
+        "timeZone": "America/New_York"
+      },
+      "recurringEventId": "hc11ubjca9r9blok3dveirs25i_R20260324T163000",
+      "originalStartTime": {
+        "dateTime": "2026-03-24T12:30:00-04:00",
+        "timeZone": "America/New_York"
+      },
+      "iCalUID": "hc11ubjca9r9blok3dveirs25i_R20260324T163000@google.com",
+      "sequence": 4,
+      "attendees": [
+        {
+          "email": "areeb@within.co",
+          "self": true,
+          "responseStatus": "declined"
+        },
+        {
+          "email": "piper.brantley@within.co",
+          "organizer": true,
+          "responseStatus": "accepted"
+        },
+        {
+          "email": "digital@within.co",
+          "displayName": "Digital Media",
+          "responseStatus": "needsAction"
+        }
+      ],
+      "hangoutLink": "https://meet.google.com/exh-toby-vjy",
+      "conferenceData": {
+        "entryPoints": [
+          {
+            "entryPointType": "video",
+            "uri": "https://meet.google.com/exh-toby-vjy",
+            "label": "meet.google.com/exh-toby-vjy"
+          },
+          {
+            "entryPointType": "more",
+            "uri": "https://tel.meet/exh-toby-vjy?pin=1759872978736",
+            "pin": "1759872978736"
+          },
+          {
+            "regionCode": "US",
+            "entryPointType": "phone",
+            "uri": "tel:+1-224-990-0309",
+            "label": "+1 224-990-0309",
+            "pin": "966975784"
+          }
+        ],
+        "conferenceSolution": {
+          "key": {
+            "type": "hangoutsMeet"
+          },
+          "name": "Google Meet",
+          "iconUri": "https://fonts.gstatic.com/s/i/productlogos/meet_2020q4/v6/web-512dp/logo_meet_2020q4_color_2x_web_512dp.png"
+        },
+        "conferenceId": "exh-toby-vjy"
+      },
+      "reminders": {
+        "useDefault": true
+      },
+      "attachments": [
+        {
+          "fileUrl": "https://docs.google.com/document/d/1HNcBz0lpk7mNUIyTA82jdRrIE43lVbCeCYsyg_wK9-4/edit?usp=meet_tnfm_calendar",
+          "title": "Notes by Gemini",
+          "mimeType": "application/vnd.google-apps.document",
+          "iconLink": "https://drive-thirdparty.googleusercontent.com/32/type/application/vnd.google-apps.document",
+          "fileId": "1HNcBz0lpk7mNUIyTA82jdRrIE43lVbCeCYsyg_wK9-4"
+        }
+      ],
+      "eventType": "default"
+    },
+    {
+      "kind": "calendar#event",
+      "etag": "\"3548745236406046\"",
+      "id": "t1okgfu1j74155uq0d6umujo00",
+      "status": "confirmed",
+      "htmlLink": "https://www.google.com/calendar/event?eid=dDFva2dmdTFqNzQxNTV1cTBkNnVtdWpvMDAgYXJlZWJAd2l0aGluLmNv",
+      "created": "2026-03-18T23:01:10.000Z",
+      "updated": "2026-03-24T17:16:58.203Z",
+      "summary": "Virtual Interview with Mohamad Abdelaziz - Paid Media Manager",
+      "description": "<a href=\"https://app7.greenhouse.io/guides/4469854007/people/63595777007/interview?application_id=70064907007\" target=\"_blank\">Internal Only</a>",
+      "creator": {
+        "email": "jobs@within.co"
+      },
+      "organizer": {
+        "email": "jobs@within.co"
+      },
+      "start": {
+        "dateTime": "2026-03-24T13:00:00-04:00",
+        "timeZone": "America/New_York"
+      },
+      "end": {
+        "dateTime": "2026-03-24T13:30:00-04:00",
+        "timeZone": "America/New_York"
+      },
+      "iCalUID": "t1okgfu1j74155uq0d6umujo00@google.com",
+      "sequence": 1,
+      "attendees": [
+        {
+          "email": "jobs@within.co",
+          "organizer": true,
+          "responseStatus": "accepted"
+        },
+        {
+          "email": "areeb@within.co",
+          "self": true,
+          "responseStatus": "accepted"
+        },
+        {
+          "email": "mohamadabdelaziz4@gmail.com",
+          "responseStatus": "needsAction"
+        },
+        {
+          "email": "maria@within.co",
+          "responseStatus": "accepted"
+        },
+        {
+          "email": "schedule@kelp.greenhouse.io",
+          "responseStatus": "needsAction"
+        }
+      ],
+      "hangoutLink": "https://meet.google.com/jdr-ufcn-sij",
+      "conferenceData": {
+        "createRequest": {
+          "requestId": "1773874870",
+          "conferenceSolutionKey": {
+            "type": "hangoutsMeet"
+          },
+          "status": {
+            "statusCode": "success"
+          }
+        },
+        "entryPoints": [
+          {
+            "entryPointType": "video",
+            "uri": "https://meet.google.com/jdr-ufcn-sij",
+            "label": "meet.google.com/jdr-ufcn-sij"
+          },
+          {
+            "entryPointType": "more",
+            "uri": "https://tel.meet/jdr-ufcn-sij?pin=7061855196956",
+            "pin": "7061855196956"
+          },
+          {
+            "regionCode": "US",
+            "entryPointType": "phone",
+            "uri": "tel:+1-984-999-3974",
+            "label": "+1 984-999-3974",
+            "pin": "248151884"
+          }
+        ],
+        "conferenceSolution": {
+          "key": {
+            "type": "hangoutsMeet"
+          },
+          "name": "Google Meet",
+          "iconUri": "https://fonts.gstatic.com/s/i/productlogos/meet_2020q4/v6/web-512dp/logo_meet_2020q4_color_2x_web_512dp.png"
+        },
+        "conferenceId": "jdr-ufcn-sij"
+      },
+      "reminders": {
+        "useDefault": true
+      },
+      "attachments": [
+        {
+          "fileUrl": "https://drive.google.com/file/d/1g4-iw7dw-aqZdQFEG4LdvN94L60GstTS/view?usp=drive_web",
+          "title": "Virtual Interview with Mohamad Abdelaziz - Paid Media Manager - 2026/03/24 12:59 EDT - Recording",
+          "mimeType": "video/mp4",
+          "iconLink": "https://drive-thirdparty.googleusercontent.com/32/type/video/mp4",
+          "fileId": "1g4-iw7dw-aqZdQFEG4LdvN94L60GstTS"
+        },
+        {
+          "fileUrl": "https://docs.google.com/document/d/1aFVKdf_UtA49q3QJ8CsO4ZeiQLVgYx2UcKCbnF9d8g0/edit?usp=meet_tnfm_calendar",
+          "title": "Notes by Gemini",
+          "mimeType": "application/vnd.google-apps.document",
+          "iconLink": "https://drive-thirdparty.googleusercontent.com/32/type/application/vnd.google-apps.document",
+          "fileId": "1aFVKdf_UtA49q3QJ8CsO4ZeiQLVgYx2UcKCbnF9d8g0"
+        }
+      ],
+      "eventType": "default"
+    },
+    {
+      "kind": "calendar#event",
+      "etag": "\"3547588642163166\"",
+      "id": "79thqlab79h0pnrmfvhko3kesh_20260320T184500Z",
+      "status": "confirmed",
+      "htmlLink": "https://www.google.com/calendar/event?eid=Nzl0aHFsYWI3OWgwcG5ybWZ2aGtvM2tlc2hfMjAyNjAzMjBUMTg0NTAwWiBhcmVlYkB3aXRoaW4uY28",
+      "created": "2026-02-10T12:32:49.000Z",
+      "updated": "2026-03-18T00:38:41.081Z",
+      "summary": "Areeb / Yongwen Bi-Weekly TB",
+      "creator": {
+        "email": "fernanda.cesar@within.co"
+      },
+      "organizer": {
+        "email": "areeb@within.co",
+        "self": true
+      },
+      "start": {
+        "dateTime": "2026-03-24T14:00:00-04:00",
+        "timeZone": "America/New_York"
+      },
+      "end": {
+        "dateTime": "2026-03-24T14:15:00-04:00",
+        "timeZone": "America/New_York"
+      },
+      "recurringEventId": "79thqlab79h0pnrmfvhko3kesh_R20260320T184500",
+      "originalStartTime": {
+        "dateTime": "2026-03-20T14:45:00-04:00",
+        "timeZone": "America/New_York"
+      },
+      "iCalUID": "79thqlab79h0pnrmfvhko3kesh_R20260320T184500@google.com",
+      "sequence": 1,
+      "attendees": [
+        {
+          "email": "c_18895q2niva8mjlajt5rbikgjh10o@resource.calendar.google.com",
+          "displayName": "HQ-6-Prosperity (7)",
+          "resource": true,
+          "responseStatus": "declined"
+        },
+        {
+          "email": "yongwen.yuan@within.co",
+          "responseStatus": "accepted"
+        },
+        {
+          "email": "areeb@within.co",
+          "organizer": true,
+          "self": true,
+          "responseStatus": "accepted"
+        }
+      ],
+      "extendedProperties": {
+        "private": {
+          "RoomReleaseEventDeclineProcessedOrganizer": "CLqDqpLNMxAC"
+        }
+      },
+      "hangoutLink": "https://meet.google.com/sre-cceh-qim",
+      "conferenceData": {
+        "entryPoints": [
+          {
+            "entryPointType": "video",
+            "uri": "https://meet.google.com/sre-cceh-qim",
+            "label": "meet.google.com/sre-cceh-qim"
+          },
+          {
+            "entryPointType": "more",
+            "uri": "https://tel.meet/sre-cceh-qim?pin=5005104986695",
+            "pin": "5005104986695"
+          },
+          {
+            "regionCode": "BR",
+            "entryPointType": "phone",
+            "uri": "tel:+55-11-4935-0120",
+            "label": "+55 11 4935-0120",
+            "pin": "701236776"
+          }
+        ],
+        "conferenceSolution": {
+          "key": {
+            "type": "hangoutsMeet"
+          },
+          "name": "Google Meet",
+          "iconUri": "https://fonts.gstatic.com/s/i/productlogos/meet_2020q4/v6/web-512dp/logo_meet_2020q4_color_2x_web_512dp.png"
+        },
+        "conferenceId": "sre-cceh-qim"
+      },
+      "guestsCanModify": true,
+      "reminders": {
+        "useDefault": true
+      },
+      "eventType": "default"
+    },
+    {
+      "kind": "calendar#event",
+      "etag": "\"3548758515619198\"",
+      "id": "13bh6rrp3rd2l51eufn94cnla4",
+      "status": "confirmed",
+      "htmlLink": "https://www.google.com/calendar/event?eid=MTNiaDZycnAzcmQybDUxZXVmbjk0Y25sYTQgYXJlZWJAd2l0aGluLmNv",
+      "created": "2026-03-23T15:07:08.000Z",
+      "updated": "2026-03-24T19:07:37.809Z",
+      "summary": "Digital P2R Dashboard Ownership",
+      "description": "\nThis call will be recorded for note taking and as a resource for the both of us.",
+      "creator": {
+        "email": "fernanda.cesar@within.co"
+      },
+      "organizer": {
+        "email": "areeb@within.co",
+        "self": true
+      },
+      "start": {
+        "dateTime": "2026-03-24T14:30:00-04:00",
+        "timeZone": "America/New_York"
+      },
+      "end": {
+        "dateTime": "2026-03-24T15:00:00-04:00",
+        "timeZone": "America/New_York"
+      },
+      "iCalUID": "13bh6rrp3rd2l51eufn94cnla4@google.com",
+      "sequence": 0,
+      "attendees": [
+        {
+          "email": "areeb@within.co",
+          "organizer": true,
+          "self": true,
+          "responseStatus": "accepted"
+        },
+        {
+          "email": "taylor@within.co",
+          "responseStatus": "accepted"
+        }
+      ],
+      "hangoutLink": "https://meet.google.com/gbj-ntpo-hpu",
+      "conferenceData": {
+        "entryPoints": [
+          {
+            "entryPointType": "video",
+            "uri": "https://meet.google.com/gbj-ntpo-hpu",
+            "label": "meet.google.com/gbj-ntpo-hpu"
+          },
+          {
+            "entryPointType": "more",
+            "uri": "https://tel.meet/gbj-ntpo-hpu?pin=1430817679934",
+            "pin": "1430817679934"
+          },
+          {
+            "regionCode": "BR",
+            "entryPointType": "phone",
+            "uri": "tel:+55-11-3957-8629",
+            "label": "+55 11 3957-8629",
+            "pin": "199469189"
+          }
+        ],
+        "conferenceSolution": {
+          "key": {
+            "type": "hangoutsMeet"
+          },
+          "name": "Google Meet",
+          "iconUri": "https://fonts.gstatic.com/s/i/productlogos/meet_2020q4/v6/web-512dp/logo_meet_2020q4_color_2x_web_512dp.png"
+        },
+        "conferenceId": "gbj-ntpo-hpu"
+      },
+      "guestsCanModify": true,
+      "reminders": {
+        "useDefault": true
+      },
+      "attachments": [
+        {
+          "fileUrl": "https://docs.google.com/document/d/1YUy2DtsGplsr5hXMw0NUkTJDMrj4Mlm-izARxMvYVqg/edit?usp=meet_tnfm_calendar",
+          "title": "Notes by Gemini",
+          "mimeType": "application/vnd.google-apps.document",
+          "iconLink": "https://drive-thirdparty.googleusercontent.com/32/type/application/vnd.google-apps.document",
+          "fileId": "1YUy2DtsGplsr5hXMw0NUkTJDMrj4Mlm-izARxMvYVqg"
+        }
+      ],
+      "eventType": "default"
+    },
+    {
+      "kind": "calendar#event",
+      "etag": "\"3548757818583198\"",
+      "id": "_60q30c1g60o30e1i60o4ac1g60rj8gpl88rj2c1h84s34h9g60s30c1g60o30c1g84r3aea66kr42gi58h348ghg64o30c1g60o30c1g60o30c1g60o32c1g60o30c1g84qk6c2488q34e1j8krjcgpk6ksj6c9h8goj4d1l8gsjgcpi6gqg_20260324T190000Z",
+      "status": "confirmed",
+      "htmlLink": "https://www.google.com/calendar/event?eid=XzYwcTMwYzFnNjBvMzBlMWk2MG80YWMxZzYwcmo4Z3BsODhyajJjMWg4NHMzNGg5ZzYwczMwYzFnNjBvMzBjMWc4NHIzYWVhNjZrcjQyZ2k1OGgzNDhnaGc2NG8zMGMxZzYwbzMwYzFnNjBvMzBjMWc2MG8zMmMxZzYwbzMwYzFnODRxazZjMjQ4OHEzNGUxajhrcmpjZ3BrNmtzajZjOWg4Z29qNGQxbDhnc2pnY3BpNmdxZ18yMDI2MDMyNFQxOTAwMDBaIGFyZWViQHdpdGhpbi5jbw",
+      "created": "2026-03-21T19:44:32.000Z",
+      "updated": "2026-03-24T19:01:49.291Z",
+      "summary": "Meta // WITHIN Biweekly",
+      "description": "<html>\r\n<head>\r\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">\r\n</head>\r\n<body>\r\n<div id=\"intern-calendar-meeting-container\">\r\n<div id=\"intern-calendar-meeting-notes\">\r\n<p>Biweekly Meeting: Meta Agency team and WITHIN. </p>\r\n<p></p>\r\n<p>Agenda: <a href=\"https://docs.google.com/document/d/19CBZkaI1icUMPV3CMVX0kodudSB5sI8LaSYeWnFzlyM/edit\">\r\nhttps://docs.google.com/document/d/19CBZkaI1icUMPV3CMVX0kodudSB5sI8LaSYeWnFzlyM/edit</a>\r\n</p>\r\n</div>\r\n<hr>\r\n<br>\r\n<table border=\"0\" width=\"100%\" cellspacing=\"0\" cellpadding=\"32\" bgcolor=\"#F2F3F5\" style=\"border-collapse:collapse; color:#1C1E21; font-family:HelveticaNeue,Helvetica,Arial,sans-serif; font-size:16px; line-height:26px\">\r\n<tbody>\r\n<tr>\r\n<td style=\"color:#1C1E21; font-family:HelveticaNeue,Helvetica,Arial,sans-serif; font-size:16px; line-height:26px\">\r\n<h1 style=\"color:#444950; font-size:20px; margin:0; padding:0\">Ways to join </h1>\r\n<br>\r\n<div>🌐 Computer or Mobile:<br>\r\n<a href=\"https://fb.zoom.us/j/95470087222?pwd=VZRWsdcW3HFbba0vaaT06hHzSzHglx.1\" style=\"color:#1763CF; text-decoration:none\">https://fb.zoom.us/j/95470087222?pwd=VZRWsdcW3HFbba0vaaT06hHzSzHglx.1</a></div>\r\n<br>\r\n<div>📹 Zoom Meeting Info: <br>\r\nMeeting ID: <b>95470087222</b><br>\r\nPasscode: <b>269273</b></div>\r\n<br>\r\n<div>☎️ Telephone:<br>\r\nDial in on any of the following:\r\n<ul style=\"margin:0\">\r\n<li><a href=\"tel:+1 929 205 6099,,95470087222#,,,,*269273#\" style=\"color:#1763CF; text-decoration:none\">+1 929 205 6099,,95470087222#,,,,*269273#</a> US (New York)</li><li><a href=\"tel:+1 312 626 6799,,95470087222#,,,,*269273#\" style=\"color:#1763CF; text-decoration:none\">+1 312 626 6799,,95470087222#,,,,*269273#</a> US (Chicago)</li><li><a href=\"tel:888 788 0099,,95470087222#,,,,*269273#\" style=\"color:#1763CF; text-decoration:none\">888 788 0099,,95470087222#,,,,*269273#</a> US Toll-free</li><li><a href=\"tel:833 548 0282,,95470087222#,,,,*269273#\" style=\"color:#1763CF; text-decoration:none\">833 548 0282,,95470087222#,,,,*269273#</a> US Toll-free</li></ul>\r\n</div>\r\n<br>\r\n<span style=\"font-family:HelveticaNeue,Helvetica,Arial,sans-serif; font-size:14px\">Enabled by\r\n<b>Zoom</b></span></td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n<br>\r\n<div data-uibase-classes=\":ui:div\" id=\"intern-calendar-meeting-links\"><a href=\"https://l.facebook.com/l.php?u=https%3A%2F%2Fdocs.google.com%2Fdocument%2Fd%2F19CBZkaI1icUMPV3CMVX0kodudSB5sI8LaSYeWnFzlyM%2Fedit%3Fusp%3Ddrivesdk%26kh_source%3DGDOCS&amp;h=AT3hILALtBlEyFH6eLXXGU5dk40MbdmSLM-C-KUjVYGMCj-cvqXc7d1FHyiaZOAiJl10MKWjnR-eb7Bk7EiGUTscwtbdqp4jCklPtVbFTHIcOH0riRzIUfbuGSHUyouTcEt8mARme6oTckm1utbB4w\" data-lynx-mode=\"hover\" data-uibase-classes=\":ui:link\">WITHIN\r\n // Meta Biweekly | TAG=</a><br>\r\n</div>\r\n</div>\r\n</body>\r\n</html>\r\n",
+      "location": "Austin - 3rd & Shoal-20-Nacogdoches (8) [VC Enabled], New York - 50 Hudson Yards-46-Tourist Selfie Sticks (12) [VC Enabled], HQ-6-Mitochondria (6), [ATX0607.15] Wings (Reservable Seats 6 LCD/VC/WB), [ATX0607.20] Nacogdoches (Reservable Seats 8 LCD/VC/WB)",
+      "creator": {
+        "email": "wclayton@meta.com"
+      },
+      "organizer": {
+        "email": "wclayton@meta.com"
+      },
+      "start": {
+        "dateTime": "2026-03-24T15:00:00-04:00",
+        "timeZone": "America/Chicago"
+      },
+      "end": {
+        "dateTime": "2026-03-24T15:45:00-04:00",
+        "timeZone": "America/Chicago"
+      },
+      "recurringEventId": "_60q30c1g60o30e1i60o4ac1g60rj8gpl88rj2c1h84s34h9g60s30c1g60o30c1g84r3aea66kr42gi58h348ghg64o30c1g60o30c1g60o30c1g60o32c1g60o30c1g84qk6c2488q34e1j8krjcgpk6ksj6c9h8goj4d1l8gsjgcpi6gqg_R20251216T200000",
+      "originalStartTime": {
+        "dateTime": "2026-03-24T15:00:00-04:00",
+        "timeZone": "America/Chicago"
+      },
+      "iCalUID": "_60q30c1g60o30e1i60o4ac1g60rj8gpl88rj2c1h84s34h9g60s30c1g60o30c1g84r3aea66kr42gi58h348ghg64o30c1g60o30c1g60o30c1g60o32c1g60o30c1g84qk6c2488q34e1j8krjcgpk6ksj6c9h8goj4d1l8gsjgcpi6gqg_R20251216T200000@google.com",
+      "sequence": 33,
+      "attendees": [
+        {
+          "email": "sean.griffin@within.co",
+          "responseStatus": "declined"
+        },
+        {
+          "email": "emilylangan@meta.com",
+          "responseStatus": "accepted"
+        },
+        {
+          "email": "danielle.kane@within.co",
+          "responseStatus": "accepted"
+        },
+        {
+          "email": "areeb@within.co",
+          "self": true,
+          "responseStatus": "declined"
+        },
+        {
+          "email": "benjamin.lorry@within.co",
+          "responseStatus": "needsAction"
+        },
+        {
+          "email": "keli.izenson@within.co",
+          "responseStatus": "accepted"
+        },
+        {
+          "email": "wclayton@meta.com",
+          "organizer": true,
+          "responseStatus": "accepted"
+        },
+        {
+          "email": "ki@within.co",
+          "responseStatus": "needsAction"
+        },
+        {
+          "email": "amanda@within.co",
+          "responseStatus": "declined"
+        },
+        {
+          "email": "aditya@brkfst.io",
+          "responseStatus": "needsAction"
+        },
+        {
+          "email": "c_18893aje2gu8gh4hhjsb1oqrfdvmm@resource.calendar.google.com",
+          "displayName": "Austin - 3rd & Shoal-20-Nacogdoches (8) [VC Enabled]",
+          "resource": true,
+          "responseStatus": "accepted"
+        },
+        {
+          "email": "c_18897fai4l9kehjgl2eedmk265d2i@resource.calendar.google.com",
+          "displayName": "New York - 50 Hudson Yards-46-Tourist Selfie Sticks (12) [VC Enabled]",
+          "resource": true,
+          "responseStatus": "accepted"
+        },
+        {
+          "email": "c_18827ebkps9rqjr6l7uilbfqqo786@resource.calendar.google.com",
+          "displayName": "HQ-6-Mitochondria (6)",
+          "resource": true,
+          "responseStatus": "accepted"
+        },
+        {
+          "email": "taylor.kelley@within.co",
+          "responseStatus": "needsAction"
+        },
+        {
+          "email": "atx060715a09@fb.com",
+          "displayName": "[ATX0607.15] Wings (Reservable Seats 6 LCD/VC/WB)",
+          "resource": true,
+          "responseStatus": "needsAction"
+        },
+        {
+          "email": "atx060720c01@meta.com",
+          "displayName": "[ATX0607.20] Nacogdoches (Reservable Seats 8 LCD/VC/WB)",
+          "resource": true,
+          "responseStatus": "needsAction"
+        }
+      ],
+      "extendedProperties": {
+        "shared": {
+          "isInternPublic": "true",
+          "lastUpdatedTimeFromIntern": "1774377825",
+          "locationReservationIDs": "{\"1774378800\":[3697787247192288,2202994893806016]}",
+          "canAnyAttendeeEdit": "true",
+          "originalRoomsToBookIDs": "[2172609232792747]"
+        }
+      },
+      "conferenceData": {
+        "entryPoints": [
+          {
+            "entryPointType": "video",
+            "uri": "https://fb.zoom.us/j/95470087222?pwd=VZRWsdcW3HFbba0vaaT06hHzSzHglx.1",
+            "label": "fb.zoom.us/j/95470087222?pwd=VZRWsdcW3HFbba0vaaT06hHzSzHglx.1"
+          }
+        ],
+        "conferenceSolution": {
+          "key": {
+            "type": "addOn"
+          },
+          "name": "Zoom"
+        },
+        "conferenceId": " ",
+        "notes": "<a href=\"https://www.google.com/url?q=https://fb.zoom.us/j/95470087222?pwd%3DVZRWsdcW3HFbba0vaaT06hHzSzHglx.1&amp;sa=D&amp;source=calendar&amp;usg=AOvVaw0aj7NfLZwpfhzriCnhvlV4\" target=\"_blank\">https://fb.zoom.us/j/95470087222?pwd=VZRWsdcW3HFbba0vaaT06hHzSzHglx.1</a>"
+      },
+      "guestsCanModify": true,
+      "reminders": {
+        "useDefault": true
+      },
+      "eventType": "default"
+    }
+  ]
+}

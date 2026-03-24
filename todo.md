@@ -14,3 +14,18 @@
 - [x] Empty state illustrations
 - [x] Backend API routes for all four platforms
 - [x] Vitest tests for backend procedures
+- [x] Rename app to Olympus (title, branding, sidebar text)
+- [x] Remove sidebar/tabs — single screen layout
+- [x] Left panel: unified priority-sorted feed (all platforms)
+- [x] Right panel: AI-proposed actions/replies with approve/reject buttons
+- [x] Responsive: stack panels on mobile
+- [ ] Voice interface (future — not this iteration)
+- [x] Fix Gmail/Calendar GWS auth — use cache-backed MCP data
+- [x] Fix Asana MCP connection — user-scoped tasks via explicit GID
+- [x] Ensure live data flows through to UI (not blank screens)
+- [x] Keep UI calm and not overwhelming
+- [x] Enforce strict READ-ONLY mode — disable all write actions (markRead, archive, send reply) across all platforms
+- [x] Fix Asana task filtering — only show tasks actually assigned to user, not entire workspace
+- [x] Fix Gmail data not showing — cache-backed parser reads pickedHeaders/internalDate
+- [x] Fix Calendar data not showing — cache-backed parser with OOO filtering
+- [x] Make "Done" and "Use Reply" buttons show read-only toast instead of mutating

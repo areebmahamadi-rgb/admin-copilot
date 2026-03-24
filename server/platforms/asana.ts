@@ -1,53 +1,45 @@
-import { execSync } from "child_process";
+import { readFileSync, existsSync } from "fs";
+import { join } from "path";
 import type { TriageItem } from "@shared/types";
 
+const CACHE_PATH = join(process.cwd(), "data-cache", "asana-raw.json");
+
 /**
- * Fetch tasks assigned to the current user from Asana using the MCP CLI.
- * Focuses on "My Tasks" that are incomplete and due soon.
+ * Fetch tasks assigned to the current user from cached Asana MCP data.
+ * READ-ONLY: no write operations to Asana.
+ *
+ * Cache shape: { data: [{ gid, name, resource_type, resource_subtype }, ...] }
+ * These are already filtered to the user's assignee GID.
  */
 export async function fetchAsanaItems(
-  maxResults = 20
+  maxResults = 15
 ): Promise<Omit<TriageItem, "priority">[]> {
   try {
-    // Search for tasks assigned to me that are incomplete
-    const raw = execSync(
-      `manus-mcp-cli tool call asana_search_tasks --server asana --input '${JSON.stringify({
-        assignee_any: "me",
-        completed: false,
-        sort_by: "due_date",
-        opt_fields: "name,due_on,due_at,notes,assignee_section.name,created_at,permalink_url",
-      })}'`,
-      { encoding: "utf-8", timeout: 15000 }
-    );
+    if (!existsSync(CACHE_PATH)) {
+      console.warn("[Asana] No cache file found at", CACHE_PATH);
+      return [];
+    }
 
+    const raw = readFileSync(CACHE_PATH, "utf-8");
     const data = JSON.parse(raw);
-    const tasks = (data?.data ?? data ?? []).slice(0, maxResults);
 
-    return tasks.map((task: Record<string, unknown>) => {
-      const dueDate = String(task.due_at ?? task.due_on ?? "");
-      const isOverdue = dueDate && new Date(dueDate) < new Date();
-      const isDueToday =
-        dueDate &&
-        new Date(dueDate).toDateString() === new Date().toDateString();
+    const tasks: Array<Record<string, unknown>> = data?.data ?? [];
 
-      return {
-        id: String(task.gid ?? task.id ?? Math.random()),
-        platform: "asana" as const,
-        title: String(task.name ?? "Untitled Task"),
-        snippet: String(task.notes ?? "").slice(0, 200),
-        timestamp: String(task.created_at ?? new Date().toISOString()),
-        isRead: false,
-        meta: {
-          dueDate,
-          isOverdue,
-          isDueToday,
-          section: (task.assignee_section as Record<string, unknown>)?.name,
-          permalink: task.permalink_url,
-        },
-      };
-    });
+    return tasks.slice(0, maxResults).map((task) => ({
+      id: String(task.gid ?? Math.random()),
+      platform: "asana" as const,
+      title: String(task.name ?? "Untitled Task"),
+      snippet: "", // Lightweight stubs don't include notes
+      timestamp: new Date().toISOString(),
+      isRead: false,
+      meta: {
+        permalink: task.gid
+          ? `https://app.asana.com/0/0/${task.gid}`
+          : undefined,
+      },
+    }));
   } catch (e) {
-    console.warn("[Asana] Failed to fetch tasks:", (e as Error).message);
+    console.warn("[Asana] Failed to parse cache:", (e as Error).message);
     return [];
   }
 }

@@ -3,7 +3,7 @@ import { z } from "zod";
 import { getSessionCookieOptions } from "./_core/cookies";
 import { systemRouter } from "./_core/systemRouter";
 import { protectedProcedure, publicProcedure, router } from "./_core/trpc";
-import { fetchGmailItems, markGmailAsRead } from "./platforms/gmail";
+import { fetchGmailItems } from "./platforms/gmail";
 import { fetchSlackItems } from "./platforms/slack";
 import { fetchAsanaItems } from "./platforms/asana";
 import { fetchCalendarEvents } from "./platforms/calendar";
@@ -25,7 +25,7 @@ export const appRouter = router({
   brief: router({
     /**
      * Generate the morning brief — the main endpoint.
-     * Fetches from all platforms, applies rule-based triage,
+     * Reads from cached platform data, applies rule-based triage,
      * and optionally generates an AI summary.
      */
     generate: protectedProcedure
@@ -39,7 +39,7 @@ export const appRouter = router({
       .query(async ({ input }): Promise<MorningBrief> => {
         const opts = input ?? { includeSummary: true };
 
-        // Fetch from all platforms in parallel
+        // Fetch from all cached platform data in parallel
         const [gmailRaw, slackRaw, asanaRaw, calendarEvents] =
           await Promise.all([
             fetchGmailItems(30),
@@ -63,8 +63,15 @@ export const appRouter = router({
 
         // Generate AI summary if requested (single batched call)
         let aiSummary: string | undefined;
-        if (opts.includeSummary && (stats.urgent > 0 || stats.action > 0 || calendarEvents.length > 0)) {
-          aiSummary = await generateBriefSummary(items, calendarEvents);
+        if (
+          opts.includeSummary &&
+          (stats.urgent > 0 || stats.action > 0 || calendarEvents.length > 0)
+        ) {
+          try {
+            aiSummary = await generateBriefSummary(items, calendarEvents);
+          } catch (e) {
+            console.error("[AI] Summary generation failed:", e);
+          }
         }
 
         // Attach summary to the first item or create a virtual summary item
@@ -81,53 +88,12 @@ export const appRouter = router({
           stats,
         };
       }),
-
-    /**
-     * Get AI summary only (lighter endpoint for refresh).
-     */
-    summary: protectedProcedure
-      .input(
-        z.object({
-          items: z.array(
-            z.object({
-              id: z.string(),
-              platform: z.enum(["gmail", "slack", "asana", "calendar"]),
-              priority: z.enum(["urgent", "action", "info", "noise"]),
-              title: z.string(),
-              snippet: z.string(),
-              sender: z.string().optional(),
-              timestamp: z.string(),
-              isRead: z.boolean(),
-              threadId: z.string().optional(),
-              meta: z.record(z.string(), z.unknown()).optional(),
-            })
-          ),
-          calendarEvents: z.array(
-            z.object({
-              id: z.string(),
-              title: z.string(),
-              startTime: z.string(),
-              endTime: z.string(),
-              location: z.string().optional(),
-              description: z.string().optional(),
-              attendees: z.array(z.string()).optional(),
-              isAllDay: z.boolean().optional(),
-            })
-          ),
-        })
-      )
-      .mutation(async ({ input }) => {
-        const summary = await generateBriefSummary(
-          input.items as TriageItem[],
-          input.calendarEvents
-        );
-        return { summary };
-      }),
   }),
 
   actions: router({
     /**
-     * Mark an item as read on its source platform.
+     * READ-ONLY: Mark as read is disabled.
+     * Returns a message explaining read-only mode.
      */
     markRead: protectedProcedure
       .input(
@@ -136,17 +102,16 @@ export const appRouter = router({
           platform: z.enum(["gmail", "slack", "asana", "calendar"]),
         })
       )
-      .mutation(async ({ input }) => {
-        if (input.platform === "gmail") {
-          const success = await markGmailAsRead(input.itemId);
-          return { success };
-        }
-        // Other platforms: mark locally only for now
-        return { success: true };
+      .mutation(async () => {
+        return {
+          success: false,
+          message: "Read-only mode — no changes are made to your accounts.",
+        };
       }),
 
     /**
      * Generate a draft reply for a specific item.
+     * This is READ-ONLY safe — it only generates text, doesn't send anything.
      */
     draftReply: protectedProcedure
       .input(

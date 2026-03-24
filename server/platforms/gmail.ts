@@ -1,112 +1,89 @@
-import { execSync } from "child_process";
+import { readFileSync, existsSync } from "fs";
+import { join } from "path";
 import type { TriageItem } from "@shared/types";
 
-interface GmailMessage {
-  id: string;
-  threadId: string;
-  snippet: string;
-  payload?: {
-    headers?: Array<{ name: string; value: string }>;
-  };
-  internalDate?: string;
-  labelIds?: string[];
-}
-
-interface GmailListResponse {
-  messages?: Array<{ id: string; threadId: string }>;
-  resultSizeEstimate?: number;
-}
-
-function getHeader(
-  headers: Array<{ name: string; value: string }> | undefined,
-  name: string
-): string {
-  return headers?.find((h) => h.name.toLowerCase() === name.toLowerCase())?.value ?? "";
-}
+const CACHE_PATH = join(process.cwd(), "data-cache", "gmail-raw.json");
 
 /**
- * Fetch recent unread emails from Gmail using the gws CLI.
- * Returns raw items without priority (triage engine assigns that).
+ * Fetch recent emails from cached Gmail MCP data.
+ * READ-ONLY: no write operations to Gmail.
  */
 export async function fetchGmailItems(
-  maxResults = 30
+  maxResults = 15
 ): Promise<Omit<TriageItem, "priority">[]> {
   try {
-    // List recent unread messages
-    const listRaw = execSync(
-      `gws gmail users messages list --params '${JSON.stringify({
-        userId: "me",
-        q: "is:unread category:primary",
-        maxResults,
-      })}'`,
-      { encoding: "utf-8", timeout: 15000 }
-    );
-
-    const listData: GmailListResponse = JSON.parse(listRaw);
-    if (!listData.messages || listData.messages.length === 0) {
+    if (!existsSync(CACHE_PATH)) {
+      console.warn("[Gmail] No cache file found at", CACHE_PATH);
       return [];
     }
 
-    // Fetch details for each message (batch via sequential calls for simplicity)
+    const raw = readFileSync(CACHE_PATH, "utf-8");
+    const data = JSON.parse(raw);
+
+    // Shape: { success, userEmail, result: { threads: [...] } }
+    const threads = data?.result?.threads ?? [];
     const items: Omit<TriageItem, "priority">[] = [];
 
-    for (const msg of listData.messages.slice(0, maxResults)) {
-      try {
-        const detailRaw = execSync(
-          `gws gmail users messages get --params '${JSON.stringify({
-            userId: "me",
-            id: msg.id,
-            format: "metadata",
-            metadataHeaders: ["From", "Subject", "Date"],
-          })}'`,
-          { encoding: "utf-8", timeout: 10000 }
-        );
+    for (const thread of threads) {
+      const messages = thread.messages ?? [];
+      if (messages.length === 0) continue;
 
-        const detail: GmailMessage = JSON.parse(detailRaw);
-        const headers = detail.payload?.headers;
+      // Use the LAST message in the thread (most recent)
+      const lastMsg = messages[messages.length - 1];
+      const headers = lastMsg.pickedHeaders ?? {};
 
-        items.push({
-          id: detail.id,
-          platform: "gmail",
-          title: getHeader(headers, "Subject") || "(no subject)",
-          snippet: detail.snippet || "",
-          sender: getHeader(headers, "From"),
-          timestamp: detail.internalDate
-            ? new Date(parseInt(detail.internalDate)).toISOString()
-            : new Date().toISOString(),
-          isRead: !(detail.labelIds?.includes("UNREAD") ?? true),
-          threadId: detail.threadId,
-          meta: { labelIds: detail.labelIds },
-        });
-      } catch (e) {
-        console.warn(`[Gmail] Failed to fetch message ${msg.id}:`, e);
-      }
+      // Skip messages sent by the user themselves
+      const from = String(headers.from ?? "");
+      if (from.includes("areeb@within.co")) continue;
+
+      const subject = String(headers.subject ?? "(no subject)");
+      const snippet = String(lastMsg.snippet ?? lastMsg.pickedPlainContent ?? "")
+        .replace(/&lt;/g, "<")
+        .replace(/&gt;/g, ">")
+        .replace(/&#39;/g, "'")
+        .replace(/&amp;/g, "&")
+        .slice(0, 300);
+
+      const timestamp = lastMsg.internalDate
+        ? new Date(Number(lastMsg.internalDate)).toISOString()
+        : new Date().toISOString();
+
+      items.push({
+        id: String(lastMsg.id ?? thread.id ?? Math.random()),
+        platform: "gmail",
+        title: subject.replace(/^(Re:\s*|Fw:\s*|Fwd:\s*)+/i, "").trim() || subject,
+        snippet,
+        sender: from,
+        timestamp,
+        isRead: false,
+        threadId: String(lastMsg.threadId ?? thread.id ?? ""),
+        meta: {
+          to: headers.to ?? "",
+          cc: headers.cc ?? "",
+          hasAttachments: (lastMsg.pickedAttachments ?? []).length > 0,
+        },
+      });
     }
 
-    return items;
+    // Deduplicate by threadId (keep most recent)
+    const seen = new Set<string>();
+    const deduped = items.filter((item) => {
+      if (!item.threadId || seen.has(item.threadId)) return false;
+      seen.add(item.threadId);
+      return true;
+    });
+
+    return deduped.slice(0, maxResults);
   } catch (e) {
-    console.error("[Gmail] Failed to fetch messages:", e);
+    console.error("[Gmail] Failed to parse cache:", (e as Error).message);
     return [];
   }
 }
 
 /**
- * Mark a Gmail message as read by removing the UNREAD label.
+ * READ-ONLY stub — no write operations allowed.
  */
-export async function markGmailAsRead(messageId: string): Promise<boolean> {
-  try {
-    execSync(
-      `gws gmail users messages modify --params '${JSON.stringify({
-        userId: "me",
-        id: messageId,
-      })}' --json '${JSON.stringify({
-        removeLabelIds: ["UNREAD"],
-      })}'`,
-      { encoding: "utf-8", timeout: 10000 }
-    );
-    return true;
-  } catch (e) {
-    console.error(`[Gmail] Failed to mark ${messageId} as read:`, e);
-    return false;
-  }
+export async function markGmailAsRead(_messageId: string): Promise<boolean> {
+  console.warn("[Gmail] READ-ONLY mode — markAsRead is disabled");
+  return false;
 }
