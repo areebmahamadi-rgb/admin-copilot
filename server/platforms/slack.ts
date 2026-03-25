@@ -6,54 +6,37 @@ const CACHE_PATH = join(process.cwd(), "data-cache", "slack-raw.json");
 
 /**
  * Parse a single Slack search result block (markdown format from MCP).
- * Each block looks like:
- *   ### Result N of M
- *   Channel: #name (ID: CXXX) or DM (ID: DXXX)
- *   Participants: ...
- *   From: Name (ID: UXXX) [BOT]?
- *   Time: 2026-03-24 20:03:49 EDT
- *   Message_ts: 1774397029.747859
- *   Permalink: [link](https://...)
- *   Text: ...
  */
-function parseResultBlock(block: string): Omit<TriageItem, "priority"> | null {
+function parseResultBlock(block: string): Omit<TriageItem, "priority" | "column"> | null {
   try {
-    // Channel or DM
     const channelMatch = block.match(/Channel:\s*(?:#?([\w-]+)|DM)\s*\(ID:\s*([\w]+)\)/);
     const channelName = channelMatch?.[1] ?? "DM";
     const channelId = channelMatch?.[2] ?? "";
 
-    // Participants (for DMs)
     const participantsMatch = block.match(/Participants:\s*(.+)/);
     const participants = participantsMatch?.[1] ?? "";
 
-    // From
     const fromMatch = block.match(/From:\s*(.+?)\s*\(ID:\s*([\w]+)\)/);
     const senderName = fromMatch?.[1]?.trim() ?? "";
     const senderId = fromMatch?.[2] ?? "";
     const isBot = block.includes("[BOT]");
 
-    // Time
     const timeMatch = block.match(/Time:\s*(.+)/);
     const timeStr = timeMatch?.[1]?.trim() ?? "";
 
-    // Message_ts
     const tsMatch = block.match(/Message_ts:\s*([\d.]+)/);
     const messageTs = tsMatch?.[1] ?? "";
 
-    // Permalink
     const permalinkMatch = block.match(/Permalink:\s*\[link\]\((.+?)\)/);
     const permalink = permalinkMatch?.[1] ?? "";
 
-    // Text — everything after "Text:" until end of block
+    // Full text — no truncation
     const textMatch = block.match(/Text:\s*\n?([\s\S]*?)$/);
     const text = textMatch?.[1]?.trim() ?? "";
 
-    // Skip bot messages (Asana notifications, Google Drive, etc.)
     if (isBot) return null;
     if (!senderName || !text) return null;
 
-    // Parse timestamp
     let timestamp: string;
     try {
       if (messageTs) {
@@ -67,10 +50,8 @@ function parseResultBlock(block: string): Omit<TriageItem, "priority"> | null {
       timestamp = new Date().toISOString();
     }
 
-    // Build title: for DMs show participant name, for channels show #channel
     let title: string;
     if (channelName === "DM") {
-      // Extract the other person's name from participants
       const otherPerson = participants
         .split(",")
         .map((p) => p.trim().split("(")[0].trim())
@@ -84,7 +65,7 @@ function parseResultBlock(block: string): Omit<TriageItem, "priority"> | null {
       id: messageTs || String(Math.random()),
       platform: "slack",
       title,
-      snippet: text.slice(0, 300),
+      snippet: text, // Full text, no truncation
       sender: senderName,
       timestamp,
       isRead: false,
@@ -104,10 +85,11 @@ function parseResultBlock(block: string): Omit<TriageItem, "priority"> | null {
 /**
  * Fetch recent Slack messages from cached MCP search results.
  * READ-ONLY: no write operations to Slack.
+ * Groups messages by channel/DM and keeps all of them for context.
  */
 export async function fetchSlackItems(
   maxResults = 20
-): Promise<Omit<TriageItem, "priority">[]> {
+): Promise<Omit<TriageItem, "priority" | "column">[]> {
   try {
     if (!existsSync(CACHE_PATH)) {
       console.warn("[Slack] No cache file found at", CACHE_PATH);
@@ -122,30 +104,51 @@ export async function fetchSlackItems(
 
     if (typeof results !== "string" || results.length === 0) return [];
 
-    // Split by "### Result N of M" headers
     const blocks = results.split(/###\s*Result\s+\d+\s+of\s+\d+/);
 
-    const items: Omit<TriageItem, "priority">[] = [];
+    const items: Omit<TriageItem, "priority" | "column">[] = [];
     for (const block of blocks) {
       if (!block.trim()) continue;
       const parsed = parseResultBlock(block);
       if (parsed) items.push(parsed);
     }
 
-    // Deduplicate by combining consecutive messages from same sender in same channel
-    const deduped: Omit<TriageItem, "priority">[] = [];
-    const seen = new Set<string>();
+    // Group by channel — for each channel/DM, keep the latest message as the main item
+    // but store ALL messages in meta.threadMessages for context display
+    const channelGroups = new Map<string, Omit<TriageItem, "priority" | "column">[]>();
     for (const item of items) {
       const meta = item.meta as Record<string, unknown>;
-      const key = `${meta.channelId}-${item.sender}`;
-      if (seen.has(key)) continue;
-      seen.add(key);
-      deduped.push(item);
+      const key = String(meta.channelId ?? item.id);
+      if (!channelGroups.has(key)) channelGroups.set(key, []);
+      channelGroups.get(key)!.push(item);
     }
 
-    return deduped.slice(0, maxResults);
+    const grouped: Omit<TriageItem, "priority" | "column">[] = [];
+    const entries = Array.from(channelGroups.entries());
+    for (const [, msgs] of entries) {
+      // Sort by timestamp descending — latest first
+      msgs.sort((a: Omit<TriageItem, "priority" | "column">, b: Omit<TriageItem, "priority" | "column">) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+      const latest = msgs[0];
+      // Store all messages as thread context (oldest first for display)
+      const threadMsgs = [...msgs].reverse().map((m: Omit<TriageItem, "priority" | "column">) => ({
+        sender: m.sender,
+        text: m.snippet,
+        timestamp: m.timestamp,
+      }));
+      if (latest) {
+        grouped.push({
+          ...latest,
+          meta: {
+            ...(latest.meta as Record<string, unknown>),
+            threadMessages: threadMsgs,
+          },
+        });
+      }
+    }
+
+    return grouped.slice(0, maxResults) as Omit<TriageItem, "priority" | "column">[];
   } catch (e) {
     console.warn("[Slack] Failed to parse cache:", (e as Error).message);
-    return [];
+    return [] as Omit<TriageItem, "priority" | "column">[];
   }
 }

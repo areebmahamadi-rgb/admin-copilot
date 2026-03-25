@@ -52,3 +52,9 @@
 - [x] Auto-refresh polling — 60s interval
 - [x] Fix stale draft bug — ExpandedCard remounts per item
 - [x] Learning from edits — draft_edits table + AI calibration from past edits
+- [ ] Three-column layout: FYI (left) / Respond (middle) / Deep Work (right)
+- [ ] Real-time data refresh — pull fresh MCP data on every load, not stale cache
+- [ ] Full Slack conversation history — show recent thread context, no truncation
+- [ ] Smarter column assignment: event invites → Respond, strategy tasks → Deep Work, newsletters → FYI
+- [ ] Enable write actions with user confirmation guardrails (mark as read, etc.)
+- [ ] Priority sorting within each column (urgent > action > info)

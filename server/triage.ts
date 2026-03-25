@@ -1,8 +1,6 @@
-import type { Priority, TriageItem } from "@shared/types";
+import type { Priority, Column, TriageItem } from "@shared/types";
 
 // ─── Rule-based noise detection ───────────────────────────────────────────────
-// These rules run BEFORE any AI call. They handle ~80% of classification
-// at zero credit cost.
 
 const NOISE_SENDER_PATTERNS = [
   /noreply@/i,
@@ -33,8 +31,6 @@ const NOISE_SUBJECT_PATTERNS = [
   /confirm your email/i,
   /welcome to/i,
   /thanks for signing up/i,
-  /invitation to edit/i,
-  /commented on/i,
   /new sign-?in/i,
   /security alert/i,
   /two-factor/i,
@@ -79,20 +75,12 @@ const ACTION_SUBJECT_PATTERNS = [
   /\?$/,
 ];
 
-/**
- * Patterns that indicate a direct human reply in a conversation thread.
- * These are NOT automated — a real person wrote back and likely expects a response.
- */
 const DIRECT_REPLY_INDICATORS = [
-  /^Re:/i,       // Email reply thread
-  /^Fw:/i,       // Forwarded for action
-  /^Fwd:/i,      // Forwarded for action
+  /^Re:/i,
+  /^Fw:/i,
+  /^Fwd:/i,
 ];
 
-/**
- * Sender domains that are clearly automated / not human.
- * Used to distinguish real human replies from bot-generated Re: threads.
- */
 const AUTOMATED_SENDER_DOMAINS = [
   /noreply@/i,
   /no-reply@/i,
@@ -111,13 +99,34 @@ const AUTOMATED_SENDER_DOMAINS = [
   /digest@/i,
 ];
 
+/** Patterns that indicate deep work (strategy, planning, process creation) */
+const DEEP_WORK_PATTERNS = [
+  /\bstrategy\b/i,
+  /\bplan\b/i,
+  /\bprocess\b/i,
+  /\bproposal\b/i,
+  /\bbudget\b/i,
+  /\bforecast\b/i,
+  /\banalysis\b/i,
+  /\breport\b/i,
+  /\bpresentation\b/i,
+  /\bdeck\b/i,
+  /\boutline\b/i,
+  /\bdocument\b/i,
+  /\bwrite\b/i,
+  /\bcreate\b/i,
+  /\bdesign\b/i,
+  /\bbuild\b/i,
+  /\barchitect/i,
+  /\bframework\b/i,
+  /\broadmap\b/i,
+];
+
 // VIP senders get auto-elevated to at least "action" priority
 const VIP_SENDER_PATTERNS: RegExp[] = [];
 
 /**
  * Classify a single item using deterministic rules.
- * Accepts optional meta for platform-specific signals (e.g., isDM for Slack).
- * Returns null if the rules are inconclusive (→ needs AI).
  */
 export function classifyByRules(item: {
   sender?: string;
@@ -149,35 +158,23 @@ export function classifyByRules(item: {
 
   // ─── Slack-specific rules ─────────────────────────────────────────
   if (platform === "slack") {
-    // DMs from real people always need a response
-    if (meta?.isDM === true && sender) {
-      return "action";
-    }
-    // Direct mentions in channels
-    if (snippet && /\b@?areeb\b/i.test(snippet)) {
-      return "action";
-    }
-    // Any non-bot Slack message with substance is at least action-worthy
-    // (you don't get random Slack messages — they're directed at you)
-    if (sender && snippet.length > 10) {
-      return "action";
-    }
+    if (meta?.isDM === true && sender) return "action";
+    if (snippet && /\b@?areeb\b/i.test(snippet)) return "action";
+    if (sender && snippet.length > 10) return "action";
   }
 
   // ─── Asana-specific rules ─────────────────────────────────────────
   if (platform === "asana") {
-    // Tasks with due dates are action items
-    if (meta?.dueDate) {
-      return "action";
-    }
+    if (meta?.dueDate) return "action";
+    // Asana tasks with substantial notes are deep work
+    if (snippet && snippet.length > 50) return "action";
+    return "action"; // All incomplete Asana tasks need attention
   }
 
   // Check action keywords
-  if (ACTION_SUBJECT_PATTERNS.some((p) => p.test(text))) {
-    return "action";
-  }
+  if (ACTION_SUBJECT_PATTERNS.some((p) => p.test(text))) return "action";
 
-  // Direct human reply in a thread → likely needs a response
+  // Direct human reply in a thread
   if (
     sender &&
     DIRECT_REPLY_INDICATORS.some((p) => p.test(title)) &&
@@ -186,7 +183,7 @@ export function classifyByRules(item: {
     return "action";
   }
 
-  // Snippet contains a direct question or request directed at the user
+  // Snippet contains a direct question or request
   if (
     sender &&
     !AUTOMATED_SENDER_DOMAINS.some((p) => p.test(sender)) &&
@@ -195,17 +192,58 @@ export function classifyByRules(item: {
     return "action";
   }
 
-  // Inconclusive — needs AI or defaults to "info"
   return null;
 }
 
 /**
- * Batch-classify items. Items that can't be classified by rules
- * are returned with priority "info" (safe default).
- * AI classification is done separately in a batch call.
+ * Determine which column an item belongs to.
+ *
+ * FYI (left):     Pure awareness — newsletters, notifications, status updates, automated alerts
+ * Respond (mid):  Quick reply/decision — emails needing response, DMs, event invites, feedback requests
+ * Work (right):   Requires thinking — strategy, plans, process, deliverables, Asana tasks with substance
+ */
+export function assignColumn(item: TriageItem): Column {
+  const { priority, platform, title, snippet, meta } = item;
+  const text = `${title} ${snippet}`;
+
+  // Noise always goes to FYI
+  if (priority === "noise" || priority === "info") {
+    // But check if it's actually a calendar event or notification that needs a decision
+    if (platform === "calendar") return "respond";
+    return "fyi";
+  }
+
+  // Asana tasks with substance → deep work
+  if (platform === "asana") {
+    if (DEEP_WORK_PATTERNS.some((p) => p.test(text))) return "work";
+    if (snippet && snippet.length > 100) return "work";
+    return "work"; // Most Asana tasks require actual work
+  }
+
+  // Urgent items that require thinking → work
+  if (priority === "urgent" && DEEP_WORK_PATTERNS.some((p) => p.test(text))) {
+    return "work";
+  }
+
+  // Emails and Slack messages that need a reply → respond
+  if (platform === "gmail" || platform === "slack") {
+    // Check if it's a deep work email (strategy, budget, etc.)
+    if (DEEP_WORK_PATTERNS.some((p) => p.test(text))) return "work";
+    return "respond";
+  }
+
+  // Calendar events → respond (accept/decline/review)
+  if (platform === "calendar") return "respond";
+
+  // Default: respond
+  return "respond";
+}
+
+/**
+ * Batch-classify items and assign columns.
  */
 export function triageItems(
-  items: Omit<TriageItem, "priority">[]
+  items: Omit<TriageItem, "priority" | "column">[]
 ): TriageItem[] {
   return items.map((item) => {
     const priority =
@@ -213,6 +251,8 @@ export function triageItems(
         ...item,
         meta: item.meta as Record<string, unknown> | undefined,
       }) ?? "info";
-    return { ...item, priority };
+    const triaged: TriageItem = { ...item, priority };
+    triaged.column = assignColumn(triaged);
+    return triaged;
   });
 }

@@ -9,6 +9,9 @@ export * from "./_core/errors";
 // Triage priority levels
 export type Priority = "urgent" | "action" | "info" | "noise";
 
+// Column assignment for three-column layout
+export type Column = "fyi" | "respond" | "work";
+
 // Platform types
 export type Platform = "gmail" | "slack" | "asana" | "calendar";
 
@@ -17,6 +20,7 @@ export interface TriageItem {
   id: string;
   platform: Platform;
   priority: Priority;
+  column?: Column;
   title: string;
   snippet: string;
   sender?: string;

@@ -7,13 +7,11 @@ const CACHE_PATH = join(process.cwd(), "data-cache", "asana-raw.json");
 /**
  * Fetch tasks assigned to the current user from cached Asana MCP data.
  * READ-ONLY: no write operations to Asana.
- *
- * Cache shape: { data: [{ gid, name, resource_type, resource_subtype }, ...] }
- * These are already filtered to the user's assignee GID.
+ * Filters out completed tasks and enriches with notes/due_on.
  */
 export async function fetchAsanaItems(
   maxResults = 15
-): Promise<Omit<TriageItem, "priority">[]> {
+): Promise<Omit<TriageItem, "priority" | "column">[]> {
   try {
     if (!existsSync(CACHE_PATH)) {
       console.warn("[Asana] No cache file found at", CACHE_PATH);
@@ -25,17 +23,26 @@ export async function fetchAsanaItems(
 
     const tasks: Array<Record<string, unknown>> = data?.data ?? [];
 
-    return tasks.slice(0, maxResults).map((task) => ({
+    // Filter out completed tasks
+    const activeTasks = tasks.filter((task) => task.completed !== true);
+
+    return activeTasks.slice(0, maxResults).map((task) => ({
       id: String(task.gid ?? Math.random()),
       platform: "asana" as const,
       title: String(task.name ?? "Untitled Task"),
-      snippet: "", // Lightweight stubs don't include notes
-      timestamp: new Date().toISOString(),
+      snippet: String(task.notes ?? "").slice(0, 500),
+      timestamp: task.due_on
+        ? new Date(String(task.due_on)).toISOString()
+        : new Date().toISOString(),
       isRead: false,
       meta: {
-        permalink: task.gid
-          ? `https://app.asana.com/0/0/${task.gid}`
-          : undefined,
+        permalink: task.permalink_url
+          ? String(task.permalink_url)
+          : task.gid
+            ? `https://app.asana.com/0/0/${task.gid}`
+            : undefined,
+        dueDate: task.due_on ? String(task.due_on) : undefined,
+        completed: task.completed === true,
       },
     }));
   } catch (e) {
