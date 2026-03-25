@@ -48,10 +48,13 @@ export async function fetchGmailItems(
         ? new Date(Number(lastMsg.internalDate)).toISOString()
         : new Date().toISOString();
 
+      const isReply = /^(Re:|Fw:|Fwd:)/i.test(subject);
+      const cleanTitle = subject.replace(/^(Re:\s*|Fw:\s*|Fwd:\s*)+/i, "").trim() || subject;
+
       items.push({
         id: String(lastMsg.id ?? thread.id ?? Math.random()),
         platform: "gmail",
-        title: subject.replace(/^(Re:\s*|Fw:\s*|Fwd:\s*)+/i, "").trim() || subject,
+        title: subject, // Keep original for triage rules (Re: detection)
         snippet,
         sender: from,
         timestamp,
@@ -61,6 +64,8 @@ export async function fetchGmailItems(
           to: headers.to ?? "",
           cc: headers.cc ?? "",
           hasAttachments: (lastMsg.pickedAttachments ?? []).length > 0,
+          cleanTitle,
+          isReply,
         },
       });
     }

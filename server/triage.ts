@@ -79,6 +79,38 @@ const ACTION_SUBJECT_PATTERNS = [
   /\?$/,
 ];
 
+/**
+ * Patterns that indicate a direct human reply in a conversation thread.
+ * These are NOT automated — a real person wrote back and likely expects a response.
+ */
+const DIRECT_REPLY_INDICATORS = [
+  /^Re:/i,       // Email reply thread
+  /^Fw:/i,       // Forwarded for action
+  /^Fwd:/i,      // Forwarded for action
+];
+
+/**
+ * Sender domains that are clearly automated / not human.
+ * Used to distinguish real human replies from bot-generated Re: threads.
+ */
+const AUTOMATED_SENDER_DOMAINS = [
+  /noreply@/i,
+  /no-reply@/i,
+  /notifications?@/i,
+  /mailer-daemon@/i,
+  /donotreply@/i,
+  /@.*\.google\.com$/i,
+  /@.*facebook\.com$/i,
+  /@.*\.facebookmail\.com$/i,
+  /support@manus\.im/i,
+  /jobs@/i,
+  /hr@/i,
+  /newsletter@/i,
+  /marketing@/i,
+  /updates?@/i,
+  /digest@/i,
+];
+
 // VIP senders get auto-elevated to at least "action" priority
 const VIP_SENDER_PATTERNS: RegExp[] = [];
 
@@ -114,6 +146,24 @@ export function classifyByRules(item: {
 
   // Check action
   if (ACTION_SUBJECT_PATTERNS.some((p) => p.test(text))) {
+    return "action";
+  }
+
+  // Direct human reply in a thread → likely needs a response
+  if (
+    sender &&
+    DIRECT_REPLY_INDICATORS.some((p) => p.test(title)) &&
+    !AUTOMATED_SENDER_DOMAINS.some((p) => p.test(sender))
+  ) {
+    return "action";
+  }
+
+  // Snippet contains a direct question or request directed at the user
+  if (
+    sender &&
+    !AUTOMATED_SENDER_DOMAINS.some((p) => p.test(sender)) &&
+    /\b(i'd like|please|could you|can you|would you|let me know|thoughts\?|what do you think)\b/i.test(snippet)
+  ) {
     return "action";
   }
 

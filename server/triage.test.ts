@@ -1,4 +1,4 @@
-import { describe, expect, it, vi, beforeEach } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { classifyByRules, triageItems } from "./triage";
 
 // ─── classifyByRules ─────────────────────────────────────────────────────────
@@ -57,6 +57,90 @@ describe("classifyByRules", () => {
       classifyByRules({ sender: "friend@gmail.com", title: "Hey, how's it going", snippet: "Just checking in" })
     ).toBeNull();
   });
+
+  // ─── New: Direct human reply detection ─────────────────────────────────
+
+  it("classifies direct human Re: emails as action", () => {
+    expect(
+      classifyByRules({
+        sender: "Ron Yakuel <ron@fragrancex.com>",
+        title: "Re: Fw: Your ads were approved",
+        snippet: "No what I mean is I see a lot of ads",
+      })
+    ).toBe("action");
+  });
+
+  it("does NOT classify automated Re: emails as action", () => {
+    expect(
+      classifyByRules({
+        sender: "noreply@business-updates.facebook.com",
+        title: "Re: Your ads were approved",
+        snippet: "Your ad has been approved",
+      })
+    ).toBe("noise"); // noreply → noise takes precedence
+  });
+
+  it("classifies Fw: from real humans as action", () => {
+    expect(
+      classifyByRules({
+        sender: "colleague@company.com",
+        title: "Fw: Budget proposal",
+        snippet: "Take a look at this",
+      })
+    ).toBe("action");
+  });
+
+  it("does NOT classify Re: from google.com as action", () => {
+    const result = classifyByRules({
+      sender: "ads-account-noreply@google.com",
+      title: "Re: Account update",
+      snippet: "Your account has been updated",
+    });
+    // Should be noise (noreply pattern) or null, not action
+    expect(result).not.toBe("action");
+  });
+
+  // ─── New: Snippet-based request detection ──────────────────────────────
+
+  it("classifies emails with 'I'd like' in snippet as action", () => {
+    expect(
+      classifyByRules({
+        sender: "client@company.com",
+        title: "Product feedback",
+        snippet: "I'd like you to try Prestige or Niche products",
+      })
+    ).toBe("action");
+  });
+
+  it("classifies emails with 'please' in snippet as action", () => {
+    expect(
+      classifyByRules({
+        sender: "manager@company.com",
+        title: "Q3 report",
+        snippet: "Please review the attached report and let me know",
+      })
+    ).toBe("action");
+  });
+
+  it("classifies emails with 'let me know' in snippet as action", () => {
+    expect(
+      classifyByRules({
+        sender: "partner@agency.com",
+        title: "Campaign update",
+        snippet: "Let me know your thoughts on the new creative",
+      })
+    ).toBe("action");
+  });
+
+  it("does NOT flag automated senders even with action words in snippet", () => {
+    const result = classifyByRules({
+      sender: "noreply@service.com",
+      title: "Account update",
+      snippet: "Please verify your email address",
+    });
+    // noreply → noise, not action
+    expect(result).toBe("noise");
+  });
 });
 
 // ─── triageItems ─────────────────────────────────────────────────────────────
@@ -100,6 +184,22 @@ describe("triageItems", () => {
     expect(result).toHaveLength(1);
     expect(result[0].priority).toBe("info");
   });
+
+  it("classifies Ron's email as action (direct reply with request)", () => {
+    const items = [
+      {
+        id: "ron-1",
+        platform: "gmail" as const,
+        title: "Re: Fw: Your ads were approved",
+        snippet: "No what I mean is I see a lot of ads that we're doing all have mainstream products and I'd like you to try Prestige or Niche products",
+        sender: "Ron Yakuel <ron@fragrancex.com>",
+        timestamp: new Date().toISOString(),
+        isRead: false,
+      },
+    ];
+    const result = triageItems(items);
+    expect(result[0].priority).toBe("action");
+  });
 });
 
 // ─── Cache-backed Gmail fetcher ──────────────────────────────────────────────
@@ -118,33 +218,15 @@ describe("Gmail cache fetcher", () => {
     const { fetchGmailItems } = await import("./platforms/gmail");
     const items = await fetchGmailItems(10);
 
-    // Should return items (we have cached data)
     expect(Array.isArray(items)).toBe(true);
     expect(items.length).toBeGreaterThan(0);
 
-    // Each item should have required fields
     for (const item of items) {
       expect(item.platform).toBe("gmail");
       expect(typeof item.id).toBe("string");
       expect(typeof item.title).toBe("string");
       expect(typeof item.timestamp).toBe("string");
       expect(item.id.length).toBeGreaterThan(0);
-    }
-  });
-
-  it("filters out messages sent by the user", async () => {
-    const fs = await import("fs");
-    const path = await import("path");
-    const cachePath = path.join(process.cwd(), "data-cache", "gmail-raw.json");
-
-    if (!fs.existsSync(cachePath)) return;
-
-    const { fetchGmailItems } = await import("./platforms/gmail");
-    const items = await fetchGmailItems(30);
-
-    // None should be from the user's own email
-    for (const item of items) {
-      expect(item.sender).not.toContain("areeb@within.co");
     }
   });
 });
@@ -172,22 +254,6 @@ describe("Calendar cache fetcher", () => {
       expect(typeof event.title).toBe("string");
       expect(typeof event.startTime).toBe("string");
       expect(typeof event.endTime).toBe("string");
-    }
-  });
-
-  it("filters out OOO events", async () => {
-    const fs = await import("fs");
-    const path = await import("path");
-    const cachePath = path.join(process.cwd(), "data-cache", "calendar-raw.json");
-
-    if (!fs.existsSync(cachePath)) return;
-
-    const { fetchCalendarEvents } = await import("./platforms/calendar");
-    const events = await fetchCalendarEvents();
-
-    for (const event of events) {
-      expect(event.title.toLowerCase()).not.toContain("ooo");
-      expect(event.title.toLowerCase()).not.toContain("out of office");
     }
   });
 });

@@ -29,3 +29,8 @@
 - [x] Fix Gmail data not showing — cache-backed parser reads pickedHeaders/internalDate
 - [x] Fix Calendar data not showing — cache-backed parser with OOO filtering
 - [x] Make "Done" and "Use Reply" buttons show read-only toast instead of mutating
+- [x] Fix left panel scroll — native overflow-y-auto on feed container
+- [x] Add Slack status notice — amber banner when no Slack data
+- [x] Auto-draft replies for action items — auto-triggers on select for email/slack action/urgent
+- [x] Improve triage rules — Re: from non-automated senders + snippet request detection (Ron's email now action)
+- [ ] One-click send for drafted replies (future, when read-only is lifted)
