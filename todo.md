@@ -58,3 +58,9 @@
 - [x] Smarter column assignment: event invites → Respond, strategy tasks → Deep Work, newsletters → FYI
 - [ ] Enable write actions with user confirmation guardrails (mark as read, etc.) (future)
 - [x] Priority sorting within each column (urgent > action > info)
+- [x] Sticky column headers — FYI / Respond / Deep Work freeze at top while scrolling
+- [x] Morning Brief — show 2-3 lines of content without expanding
+- [x] Inline draft reply visible on Respond cards without needing to expand
+- [x] Triage fixes: auth tokens, daily alerts, Facebook, Confluence, retail noise → FYI
+- [x] Real-time data — 15-min scheduled auto-refresh via cron task
+- [x] Asana column fix: short tasks → Respond, only strategic tasks → Deep Work

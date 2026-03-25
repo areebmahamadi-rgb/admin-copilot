@@ -15,6 +15,17 @@ const NOISE_SENDER_PATTERNS = [
   /digest@/i,
   /hello@.*\.substack\.com/i,
   /@mail\.beehiiv\.com/i,
+  // Automated platform senders
+  /@.*atlassian\.com$/i,
+  /@.*confluence/i,
+  /confluence@/i,
+  /@.*facebook\.com$/i,
+  /@.*facebookmail\.com$/i,
+  // Retail / e-commerce senders
+  /@.*softsurroundings\./i,
+  /@.*goldwatercreek\./i,
+  /@.*theory\./i,
+  /@.*feedonomics\./i,
 ];
 
 const NOISE_SUBJECT_PATTERNS = [
@@ -22,6 +33,12 @@ const NOISE_SUBJECT_PATTERNS = [
   /\bnewsletter\b/i,
   /weekly digest/i,
   /daily digest/i,
+  /daily alert/i,
+  /daily report/i,
+  /daily summary/i,
+  /weekly report/i,
+  /automated report/i,
+  /system notification/i,
   /your .* receipt/i,
   /order confirmation/i,
   /shipping confirmation/i,
@@ -38,6 +55,31 @@ const NOISE_SUBJECT_PATTERNS = [
   /your .* statement/i,
   /payment received/i,
   /invoice/i,
+  // Auth / token notifications
+  /authentication token/i,
+  /access token/i,
+  /api key/i,
+  /token expired/i,
+  /token generated/i,
+  // CI/CD and platform alerts
+  /build (passed|failed|succeeded)/i,
+  /deployment (succeeded|failed|complete)/i,
+  /page updated in confluence/i,
+  /confluence.*page/i,
+  // Retail noise
+  /\bsale\b.*\bends\b/i,
+  /\boff\b.*\btoday\b/i,
+  /\bdiscount\b/i,
+  /\bcoupon\b/i,
+  /\bpromo\b/i,
+  /\bfree shipping\b/i,
+  /\bnew arrivals\b/i,
+  /\bback in stock\b/i,
+  /\bwishlist\b/i,
+  /\bexclusive offer\b/i,
+  /\byour order\b/i,
+  /\btrack your/i,
+  /\bshipped\b/i,
 ];
 
 const URGENT_SUBJECT_PATTERNS = [
@@ -90,6 +132,8 @@ const AUTOMATED_SENDER_DOMAINS = [
   /@.*\.google\.com$/i,
   /@.*facebook\.com$/i,
   /@.*\.facebookmail\.com$/i,
+  /@.*atlassian\.com$/i,
+  /confluence@/i,
   /support@manus\.im/i,
   /jobs@/i,
   /hr@/i,
@@ -138,10 +182,11 @@ export function classifyByRules(item: {
   const { sender, title, snippet, platform, meta } = item;
   const text = `${title} ${snippet}`;
 
-  // Check noise first
+  // Check noise first — sender patterns
   if (sender && NOISE_SENDER_PATTERNS.some((p) => p.test(sender))) {
     return "noise";
   }
+  // Check noise — subject patterns
   if (NOISE_SUBJECT_PATTERNS.some((p) => p.test(title))) {
     return "noise";
   }
@@ -166,7 +211,6 @@ export function classifyByRules(item: {
   // ─── Asana-specific rules ─────────────────────────────────────────
   if (platform === "asana") {
     if (meta?.dueDate) return "action";
-    // Asana tasks with substantial notes are deep work
     if (snippet && snippet.length > 50) return "action";
     return "action"; // All incomplete Asana tasks need attention
   }
@@ -199,35 +243,33 @@ export function classifyByRules(item: {
  * Determine which column an item belongs to.
  *
  * FYI (left):     Pure awareness — newsletters, notifications, status updates, automated alerts
- * Respond (mid):  Quick reply/decision — emails needing response, DMs, event invites, feedback requests
- * Work (right):   Requires thinking — strategy, plans, process, deliverables, Asana tasks with substance
+ * Respond (mid):  Quick reply/decision — emails needing response, DMs, event invites, Asana tasks
+ * Work (right):   Requires thinking — strategy, plans, process, deliverables
  */
 export function assignColumn(item: TriageItem): Column {
   const { priority, platform, title, snippet, meta } = item;
   const text = `${title} ${snippet}`;
 
-  // Noise always goes to FYI
+  // Noise / info always goes to FYI (except calendar events)
   if (priority === "noise" || priority === "info") {
-    // But check if it's actually a calendar event or notification that needs a decision
     if (platform === "calendar") return "respond";
     return "fyi";
   }
 
-  // Asana tasks with substance → deep work
+  // Asana tasks → respond unless they have clear strategic depth
   if (platform === "asana") {
-    if (DEEP_WORK_PATTERNS.some((p) => p.test(text))) return "work";
-    if (snippet && snippet.length > 100) return "work";
-    return "work"; // Most Asana tasks require actual work
+    if (DEEP_WORK_PATTERNS.some((p) => p.test(text)) && snippet && snippet.length > 150) return "work";
+    return "respond";
   }
 
-  // Urgent items that require thinking → work
+  // Urgent items that require deep thinking → work
   if (priority === "urgent" && DEEP_WORK_PATTERNS.some((p) => p.test(text))) {
     return "work";
   }
 
-  // Emails and Slack messages that need a reply → respond
+  // Emails and Slack messages
   if (platform === "gmail" || platform === "slack") {
-    // Check if it's a deep work email (strategy, budget, etc.)
+    // Deep work emails → work column
     if (DEEP_WORK_PATTERNS.some((p) => p.test(text))) return "work";
     return "respond";
   }

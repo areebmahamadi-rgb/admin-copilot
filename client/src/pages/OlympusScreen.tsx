@@ -336,8 +336,77 @@ function ExpandedCard({ item }: { item: TriageItem }) {
   );
 }
 
+// ─── Inline Draft (Respond column — zero-expand UX) ──────────────────────────
+function InlineDraft({ item }: { item: TriageItem }) {
+  const draftReply = trpc.actions.draftReply.useMutation();
+  const saveDraftEdit = trpc.actions.saveDraftEdit.useMutation();
+  const [editedDraft, setEditedDraft] = useState("");
+  const [isEditing, setIsEditing] = useState(false);
+  const [isDismissed, setIsDismissed] = useState(false);
+  const originalDraftRef = useRef("");
+  const meta = item.meta as Record<string, unknown> | undefined;
+
+  useEffect(() => {
+    if (!draftReply.data?.draft && !draftReply.isPending) {
+      draftReply.mutate({ id: item.id, platform: item.platform, title: item.title, snippet: item.snippet, sender: item.sender, channelId: meta?.channelId ? String(meta.channelId) : undefined });
+    }
+  }, [item.id]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    if (draftReply.data?.draft) { setEditedDraft(draftReply.data.draft); originalDraftRef.current = draftReply.data.draft; }
+  }, [draftReply.data?.draft]);
+
+  if (isDismissed) return null;
+
+  const handleApprove = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (isEditing && editedDraft !== originalDraftRef.current)
+      saveDraftEdit.mutate({ platform: item.platform, sender: item.sender, originalDraft: originalDraftRef.current, editedDraft, itemTitle: item.title });
+    toast.info("Read-only mode — draft copied to clipboard");
+    navigator.clipboard.writeText(editedDraft || draftReply.data?.draft || "");
+  };
+  const handleDismiss = (e: React.MouseEvent) => { e.stopPropagation(); setIsDismissed(true); };
+
+  return (
+    <div className="mx-3 mb-3 rounded-lg border border-primary/20 bg-primary/5 p-2.5" onClick={e => e.stopPropagation()}>
+      {draftReply.isPending && (
+        <div className="flex items-center gap-1.5 text-xs text-muted-foreground py-1">
+          <Loader2 className="h-3 w-3 animate-spin" /><span className="font-body">Drafting reply…</span>
+        </div>
+      )}
+      {(editedDraft || draftReply.data?.draft) && (
+        <>
+          <p className="text-[10px] text-primary font-medium uppercase tracking-wider font-body mb-1.5">Recommended Reply</p>
+          {isEditing ? (
+            <Textarea value={editedDraft} onChange={e => setEditedDraft(e.target.value)}
+              className="text-xs font-body leading-relaxed min-h-[48px] bg-transparent border-0 p-0 resize-none focus-visible:ring-0 shadow-none mb-2"
+              placeholder="Edit reply…" onClick={e => e.stopPropagation()} />
+          ) : (
+            <p className="text-xs text-foreground font-body leading-relaxed mb-2 cursor-text line-clamp-2" onClick={() => setIsEditing(true)}>
+              {editedDraft || draftReply.data?.draft}
+            </p>
+          )}
+          <div className="flex gap-1.5">
+            <Button size="sm" className="flex-1 h-7 text-xs gap-1" onClick={handleApprove}>
+              <Check className="h-3 w-3" />{isEditing && editedDraft !== originalDraftRef.current ? "Save & Copy" : "Approve & Copy"}
+            </Button>
+            {!isEditing && (
+              <Button variant="outline" size="sm" className="h-7 text-xs px-2" onClick={() => setIsEditing(true)}>
+                Edit
+              </Button>
+            )}
+            <Button variant="ghost" size="sm" className="h-7 w-7 p-0 text-muted-foreground" onClick={handleDismiss} title="Dismiss">
+              ×
+            </Button>
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
+
 // ─── Feed Card ────────────────────────────────────────────────────────────────
-function FeedCard({ item, isExpanded, onToggle }: { item: TriageItem; isExpanded: boolean; onToggle: () => void }) {
+function FeedCard({ item, isExpanded, onToggle, showInlineDraft }: { item: TriageItem; isExpanded: boolean; onToggle: () => void; showInlineDraft?: boolean }) {
   const config = priorityConfig[item.priority];
   const senderDisplay = item.sender ? item.sender.split("<")[0].trim() : "";
   return (
@@ -364,6 +433,11 @@ function FeedCard({ item, isExpanded, onToggle }: { item: TriageItem; isExpanded
         </div>
       </button>
       {isExpanded && <ExpandedCard item={item} />}
+      {/* Inline draft visible on Respond cards without expanding */}
+      {!isExpanded && showInlineDraft && (item.priority === "action" || item.priority === "urgent") &&
+        (item.platform === "gmail" || item.platform === "slack") && (
+        <InlineDraft item={item} />
+      )}
     </div>
   );
 }
@@ -376,7 +450,7 @@ function ColumnPanel({ col, items, expandedId, onToggle }: { col: Column; items:
   const actionCount = items.filter(i => i.priority === "action").length;
   return (
     <div className="flex flex-col min-w-0 flex-1">
-      <div className={`flex items-center gap-2 px-3 py-2.5 rounded-lg border mb-3 ${cfg.headerClass}`}>
+      <div className={`flex items-center gap-2 px-3 py-2.5 rounded-lg border mb-3 sticky top-[57px] z-10 backdrop-blur-sm ${cfg.headerClass}`}>
         <ColIcon className="h-3.5 w-3.5 shrink-0" />
         <div className="flex-1 min-w-0">
           <span className="text-xs font-semibold font-headline tracking-wide uppercase">{cfg.label}</span>
@@ -395,7 +469,7 @@ function ColumnPanel({ col, items, expandedId, onToggle }: { col: Column; items:
             <p className="text-xs text-muted-foreground/50 font-body">All clear</p>
           </div>
         ) : items.map(item => (
-          <FeedCard key={item.id} item={item} isExpanded={expandedId === item.id} onToggle={() => onToggle(item.id)} />
+          <FeedCard key={item.id} item={item} isExpanded={expandedId === item.id} onToggle={() => onToggle(item.id)} showInlineDraft={col === "respond"} />
         ))}
       </div>
     </div>
@@ -437,17 +511,21 @@ function CalendarStrip({ events }: { events: CalendarEvent[] }) {
 // ─── AI Summary ───────────────────────────────────────────────────────────────
 function AISummary({ summary }: { summary: string }) {
   const [expanded, setExpanded] = useState(false);
+  // Show first 3 meaningful lines by default (skip empty lines)
+  const lines = summary.split("\n").filter(l => l.trim().length > 0);
+  const previewLines = lines.slice(0, 3).join(" ").slice(0, 280);
+  const hasMore = summary.length > 280 || lines.length > 3;
   return (
     <div className="bg-card rounded-lg border border-primary/20 p-3 shadow-sm cursor-pointer hover:border-primary/30 transition-colors" onClick={() => setExpanded(!expanded)}>
-      <div className="flex items-center gap-2 mb-1">
+      <div className="flex items-center gap-2 mb-1.5">
         <Zap className="h-3.5 w-3.5 text-primary" />
         <span className="text-xs font-medium text-primary font-headline tracking-wide uppercase">Morning Brief</span>
-        <span className="text-[10px] text-muted-foreground ml-auto font-body">{expanded ? "collapse" : "expand"}</span>
+        {hasMore && <span className="text-[10px] text-muted-foreground ml-auto font-body">{expanded ? "show less" : "read more"}</span>}
       </div>
       {expanded ? (
-        <div className="text-sm text-foreground/80 font-body leading-relaxed mt-2 prose prose-sm max-w-none"><Streamdown>{summary}</Streamdown></div>
+        <div className="text-sm text-foreground/80 font-body leading-relaxed mt-1 prose prose-sm max-w-none"><Streamdown>{summary}</Streamdown></div>
       ) : (
-        <p className="text-xs text-muted-foreground font-body truncate">{summary.split("\n")[0]?.slice(0, 140)}...</p>
+        <p className="text-xs text-foreground/70 font-body leading-relaxed line-clamp-3">{previewLines}{hasMore ? "…" : ""}</p>
       )}
     </div>
   );
