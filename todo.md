@@ -38,3 +38,17 @@
 - [x] Add platform badges (Email/Slack/Asana/Calendar color-coded labels) on each feed item
 - [x] Context-aware AI drafts — pulls conversation history from cache, matches tone/style
 - [x] Ensure feed is always sorted by priority (urgent > action > info > noise)
+- [x] Auto-refresh — 60s polling with refetchOnWindowFocus
+- [x] Fix stale draft bug — ExpandedCard remounts on item change, clearing draft state
+- [x] Show full Slack messages — full snippet in expanded card
+- [x] DM conversation context — ThreadContext component for all platforms
+- [x] Learning from edits — draft_edits DB table, saveDraftEdit mutation, AI uses past edits as examples
+- [x] Rebuild as single-column scrollable feed (Instagram-like UX)
+- [x] Rich expandable cards — tap to expand in-place with full context + action
+- [x] Show full message text (no truncation) in expanded cards
+- [x] Conversation history context for ALL platforms via ThreadContext
+- [x] Inline recommended reply with Approve / Edit / Regenerate buttons
+- [x] Mic button for voice dictation of edits to drafts
+- [x] Auto-refresh polling — 60s interval
+- [x] Fix stale draft bug — ExpandedCard remounts per item
+- [x] Learning from edits — draft_edits table + AI calibration from past edits

@@ -1,0 +1,9 @@
+{
+  "query": "CREATE TABLE `draft_edits` (\n\t`id` int AUTO_INCREMENT NOT NULL,\n\t`userId` int NOT NULL,\n\t`platform` varchar(32) NOT NULL,\n\t`sender` varchar(320),\n\t`originalDraft` text NOT NULL,\n\t`editedDraft` text NOT NULL,\n\t`itemTitle` varchar(500),\n\t`createdAt` timestamp NOT NULL DEFAULT (now()),\n\tCONSTRAINT `draft_edits_id` PRIMARY KEY(`id`)\n);",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway05.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4FemFf41Hmx27Vi.c0dbe0842d33 --database NT3x8MXBWwc5MqpUfjHM7d --execute CREATE TABLE `draft_edits` (\n\t`id` int AUTO_INCREMENT NOT NULL,\n\t`userId` int NOT NULL,\n\t`platform` varchar(32) NOT NULL,\n\t`sender` varchar(320),\n\t`originalDraft` text NOT NULL,\n\t`editedDraft` text NOT NULL,\n\t`itemTitle` varchar(500),\n\t`createdAt` timestamp NOT NULL DEFAULT (now()),\n\tCONSTRAINT `draft_edits_id` PRIMARY KEY(`id`)\n);",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 596
+}

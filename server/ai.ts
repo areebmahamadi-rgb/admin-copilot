@@ -17,7 +17,6 @@ export async function generateBriefSummary(
     return "Nothing urgent today. Your inbox and tasks are clear.";
   }
 
-  // Build a compact prompt with just the data the LLM needs
   const emailItems = importantItems
     .filter((i) => i.platform === "gmail")
     .map((i) => `- [${i.priority.toUpperCase()}] From: ${i.sender} | Subject: ${i.title} | Preview: ${i.snippet.slice(0, 100)}`)
@@ -86,15 +85,25 @@ Rules:
 
 /**
  * Generate a context-aware draft reply for a given email/message.
- * Uses conversation history to match the tone and style of the relationship.
+ * Uses conversation history AND past edit corrections to match tone.
  */
 export async function generateDraftReply(
   item: TriageItem,
-  conversationHistory?: string
+  conversationHistory?: string,
+  pastEdits?: { originalDraft: string; editedDraft: string; sender: string | null }[]
 ): Promise<string> {
   const historyBlock = conversationHistory
     ? `\nPREVIOUS CONVERSATION HISTORY WITH THIS PERSON (use this to match tone/style):\n${conversationHistory}\n`
     : "";
+
+  // Build learning block from past edits
+  let learningBlock = "";
+  if (pastEdits && pastEdits.length > 0) {
+    const examples = pastEdits
+      .map((e, i) => `Example ${i + 1}:\n  AI drafted: "${e.originalDraft}"\n  User corrected to: "${e.editedDraft}"`)
+      .join("\n");
+    learningBlock = `\nLEARNING FROM PAST CORRECTIONS (the user has edited previous drafts — study the pattern and apply it):\n${examples}\n`;
+  }
 
   const prompt = `Draft a reply to this message.
 
@@ -102,9 +111,10 @@ Platform: ${item.platform}
 From: ${item.sender}
 Subject/Title: ${item.title}
 Message: ${item.snippet}
-${historyBlock}
+${historyBlock}${learningBlock}
 Rules:
 - CRITICAL: Match the tone and style of the conversation history. If past messages are casual/direct, reply casually. If formal, reply formally.
+- CRITICAL: If there are past corrections, learn from them. The user's edits show exactly how they want to sound. Mimic their edited versions, not your original drafts.
 - Keep it short — 1-3 sentences max.
 - Be direct. No fluff, no filler.
 - If it's a question, answer it or say you'll check.
@@ -116,7 +126,7 @@ Rules:
   try {
     const result = await invokeLLM({
       messages: [
-        { role: "system", content: "You draft short replies that perfectly match the existing conversational tone between two people. If they talk casually, you reply casually. If they're blunt, you're blunt. Never default to corporate/formal unless the history shows that pattern." },
+        { role: "system", content: "You draft short replies that perfectly match the existing conversational tone between two people. If they talk casually, you reply casually. If they're blunt, you're blunt. Never default to corporate/formal unless the history shows that pattern. When past corrections are provided, treat them as the ground truth for how the user wants to communicate." },
         { role: "user", content: prompt },
       ],
     });
@@ -149,7 +159,6 @@ export async function getConversationHistory(
         const raw = JSON.parse(readFileSync(slackPath, "utf-8"));
         const results = raw?.results ?? "";
         if (typeof results === "string") {
-          // Extract messages from same channel
           const blocks = results.split(/###\s*Result\s+\d+\s+of\s+\d+/);
           for (const block of blocks) {
             if (block.includes(`ID: ${channelId}`)) {
@@ -171,18 +180,17 @@ export async function getConversationHistory(
       const gmailPath = join(process.cwd(), "data-cache", "gmail-raw.json");
       if (existsSync(gmailPath)) {
         const raw = JSON.parse(readFileSync(gmailPath, "utf-8"));
-        const results = raw?.results ?? "";
-        if (typeof results === "string") {
-          const blocks = results.split(/###\s*Result\s+\d+\s+of\s+\d+/);
-          for (const block of blocks) {
+        const threads = raw?.result?.threads ?? [];
+        for (const thread of threads) {
+          const messages = thread.messages ?? [];
+          for (const msg of messages) {
+            const from = String(msg.pickedHeaders?.from ?? "");
             const senderLower = senderName.toLowerCase();
-            if (block.toLowerCase().includes(senderLower)) {
-              const snippetMatch = block.match(/Snippet:\s*(.+)/i) || block.match(/Body Preview:\s*(.+)/i);
-              const subjectMatch = block.match(/Subject:\s*(.+)/i);
-              const text = snippetMatch?.[1]?.trim() ?? "";
-              const subject = subjectMatch?.[1]?.trim() ?? "";
+            if (from.toLowerCase().includes(senderLower) || String(msg.pickedHeaders?.to ?? "").toLowerCase().includes(senderLower)) {
+              const text = String(msg.pickedPlainContent ?? msg.snippet ?? "").slice(0, 300);
+              const subject = String(msg.pickedHeaders?.subject ?? "");
               if (text) {
-                snippets.push(`[${subject}] ${text.slice(0, 200)}`);
+                snippets.push(`${from.split("<")[0].trim()}: [${subject}] ${text}`);
               }
             }
           }
@@ -194,4 +202,85 @@ export async function getConversationHistory(
   }
 
   return snippets.slice(0, 10).join("\n");
+}
+
+/**
+ * Get full thread messages for a Gmail thread or Slack DM channel.
+ * Returns an array of { sender, text, timestamp } for display in the UI.
+ */
+export async function getThreadMessages(
+  platform: string,
+  threadId?: string,
+  channelId?: string
+): Promise<{ sender: string; text: string; timestamp: string; isUser: boolean }[]> {
+  const { readFileSync, existsSync } = await import("fs");
+  const { join } = await import("path");
+  const messages: { sender: string; text: string; timestamp: string; isUser: boolean }[] = [];
+
+  try {
+    if (platform === "gmail" && threadId) {
+      const gmailPath = join(process.cwd(), "data-cache", "gmail-raw.json");
+      if (existsSync(gmailPath)) {
+        const raw = JSON.parse(readFileSync(gmailPath, "utf-8"));
+        const threads = raw?.result?.threads ?? [];
+        for (const thread of threads) {
+          if (String(thread.id) === threadId || thread.messages?.some((m: any) => String(m.threadId) === threadId)) {
+            for (const msg of thread.messages ?? []) {
+              const from = String(msg.pickedHeaders?.from ?? "");
+              const isUser = from.toLowerCase().includes("areeb");
+              const text = String(msg.pickedPlainContent ?? msg.snippet ?? "")
+                .replace(/\r\n/g, "\n")
+                .split(/\n[-_]{3,}\n/)[0] // Remove quoted reply chain
+                ?.trim()
+                .slice(0, 500) ?? "";
+              const timestamp = msg.internalDate
+                ? new Date(Number(msg.internalDate)).toISOString()
+                : "";
+              if (text) {
+                messages.push({
+                  sender: from.split("<")[0].trim(),
+                  text,
+                  timestamp,
+                  isUser,
+                });
+              }
+            }
+          }
+        }
+      }
+    }
+
+    if (platform === "slack" && channelId) {
+      const slackPath = join(process.cwd(), "data-cache", "slack-raw.json");
+      if (existsSync(slackPath)) {
+        const raw = JSON.parse(readFileSync(slackPath, "utf-8"));
+        const results = raw?.results ?? "";
+        if (typeof results === "string") {
+          const blocks = results.split(/###\s*Result\s+\d+\s+of\s+\d+/);
+          for (const block of blocks) {
+            if (block.includes(`ID: ${channelId}`)) {
+              const fromMatch = block.match(/From:\s*(.+?)\s*\(/);
+              const textMatch = block.match(/Text:\s*\n?([\s\S]*?)$/);
+              const tsMatch = block.match(/Message_ts:\s*([\d.]+)/);
+              const sender = fromMatch?.[1]?.trim() ?? "";
+              const text = textMatch?.[1]?.trim() ?? "";
+              const isBot = block.includes("[BOT]");
+              if (!isBot && sender && text) {
+                const isUser = sender.toLowerCase().includes("areeb");
+                const timestamp = tsMatch?.[1]
+                  ? new Date(parseFloat(tsMatch[1]) * 1000).toISOString()
+                  : "";
+                messages.push({ sender, text, timestamp, isUser });
+              }
+            }
+          }
+        }
+      }
+    }
+  } catch (e) {
+    console.warn("[AI] Failed to load thread messages:", e);
+  }
+
+  // Sort by timestamp ascending (oldest first)
+  return messages.sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime());
 }

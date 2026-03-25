@@ -1,6 +1,6 @@
-import { eq } from "drizzle-orm";
+import { eq, desc } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
-import { InsertUser, users } from "../drizzle/schema";
+import { InsertUser, InsertDraftEdit, users, draftEdits } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
 let _db: ReturnType<typeof drizzle> | null = null;
@@ -89,4 +89,34 @@ export async function getUserByOpenId(openId: string) {
   return result.length > 0 ? result[0] : undefined;
 }
 
-// TODO: add feature queries here as your schema grows.
+// ─── Draft Edits (Learning) ──────────────────────────────────────────────
+
+export async function saveDraftEdit(edit: InsertDraftEdit): Promise<void> {
+  const db = await getDb();
+  if (!db) return;
+  await db.insert(draftEdits).values(edit);
+}
+
+export async function getRecentDraftEdits(
+  userId: number,
+  platform?: string,
+  sender?: string,
+  limit = 5
+): Promise<{ originalDraft: string; editedDraft: string; sender: string | null }[]> {
+  const db = await getDb();
+  if (!db) return [];
+
+  let query = db
+    .select({
+      originalDraft: draftEdits.originalDraft,
+      editedDraft: draftEdits.editedDraft,
+      sender: draftEdits.sender,
+    })
+    .from(draftEdits)
+    .where(eq(draftEdits.userId, userId))
+    .orderBy(desc(draftEdits.createdAt))
+    .limit(limit);
+
+  const results = await query;
+  return results;
+}

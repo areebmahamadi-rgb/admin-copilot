@@ -25,4 +25,18 @@ export const users = mysqlTable("users", {
 export type User = typeof users.$inferSelect;
 export type InsertUser = typeof users.$inferInsert;
 
-// TODO: Add your tables here
+// Draft edits table — stores user corrections to AI-generated drafts
+// Used to learn from edits and calibrate future draft generation
+export const draftEdits = mysqlTable("draft_edits", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId").notNull(),
+  platform: varchar("platform", { length: 32 }).notNull(),
+  sender: varchar("sender", { length: 320 }),
+  originalDraft: text("originalDraft").notNull(),
+  editedDraft: text("editedDraft").notNull(),
+  itemTitle: varchar("itemTitle", { length: 500 }),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type DraftEdit = typeof draftEdits.$inferSelect;
+export type InsertDraftEdit = typeof draftEdits.$inferInsert;
