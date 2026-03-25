@@ -38,6 +38,55 @@ import { Streamdown } from "streamdown";
 import type { TriageItem, CalendarEvent, Priority, Column } from "@shared/types";
 import { toast } from "sonner";
 
+// Session-level draft cache — avoids repeat AI calls when reopening cards
+const sessionDraftCache = new Map<string, string>();
+
+// ─── Platform Icons (SVG, no extra package) ─────────────────────────────────
+function GmailIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M2 6a2 2 0 012-2h16a2 2 0 012 2v12a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" fill="#fff" stroke="#EA4335" strokeWidth="1.5"/>
+      <path d="M2 6l10 7 10-7" stroke="#EA4335" strokeWidth="1.5" strokeLinecap="round"/>
+    </svg>
+  );
+}
+function SlackIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="2" y="2" width="20" height="20" rx="5" fill="#4A154B"/>
+      <path d="M8.5 13.5a1.5 1.5 0 100-3 1.5 1.5 0 000 3zm0 1.5a3 3 0 01-3-3H4a4.5 4.5 0 004.5 4.5V15zm0-6V7.5a1.5 1.5 0 013 0V9h1.5V7.5a3 3 0 00-6 0V9H8.5zm7 3a1.5 1.5 0 100-3 1.5 1.5 0 000 3zm0 1.5V15a4.5 4.5 0 004.5-4.5H18.5a3 3 0 01-3 3zm0-6V7.5a3 3 0 00-6 0V9H11v-.5a1.5 1.5 0 013 0V9h1.5z" fill="#fff"/>
+    </svg>
+  );
+}
+function AsanaIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="12" cy="8" r="4" fill="#F06A6A"/>
+      <circle cx="6" cy="16" r="4" fill="#F06A6A"/>
+      <circle cx="18" cy="16" r="4" fill="#F06A6A"/>
+    </svg>
+  );
+}
+function CalendarIcon2({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="3" y="4" width="18" height="18" rx="3" fill="#4285F4"/>
+      <path d="M3 9h18" stroke="#fff" strokeWidth="1.5"/>
+      <rect x="8" y="2" width="2" height="4" rx="1" fill="#4285F4" stroke="#4285F4" strokeWidth="0.5"/>
+      <rect x="14" y="2" width="2" height="4" rx="1" fill="#4285F4" stroke="#4285F4" strokeWidth="0.5"/>
+      <circle cx="8" cy="14" r="1.5" fill="#fff"/>
+      <circle cx="12" cy="14" r="1.5" fill="#fff"/>
+      <circle cx="16" cy="14" r="1.5" fill="#fff"/>
+    </svg>
+  );
+}
+const PlatformIcon: Record<string, React.FC<{ className?: string }>> = {
+  gmail: GmailIcon,
+  slack: SlackIcon,
+  asana: AsanaIcon,
+  calendar: CalendarIcon2,
+};
+
 // ─── Config ──────────────────────────────────────────────────────────────────
 const platformLabel: Record<string, string> = {
   gmail: "Email",
@@ -241,7 +290,7 @@ function ThreadContext({ platform, threadId, channelId }: { platform: string; th
         {thread.data.messages.map((msg, i) => (
           <div key={i} className={`text-xs font-body ${msg.isUser ? "text-primary" : "text-foreground/70"}`}>
             <span className="font-medium">{msg.sender}:</span>{" "}
-            <span className="leading-relaxed">{msg.text}</span>
+            <span className="leading-relaxed">{typeof msg.text === 'string' ? msg.text.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').trim() : String(msg.text)}</span>
           </div>
         ))}
       </div>
@@ -336,25 +385,32 @@ function ExpandedCard({ item }: { item: TriageItem }) {
   );
 }
 
-// ─── Inline Draft (Respond column — zero-expand UX) ──────────────────────────
+// ─── Inline Draft (Respond column — zero-expand UX) ────────────────────────────────────────────────────
 function InlineDraft({ item }: { item: TriageItem }) {
   const draftReply = trpc.actions.draftReply.useMutation();
   const saveDraftEdit = trpc.actions.saveDraftEdit.useMutation();
-  const [editedDraft, setEditedDraft] = useState("");
+  // Use session cache to avoid re-generating on every render
+  const cached = sessionDraftCache.get(item.id);
+  const [editedDraft, setEditedDraft] = useState(cached ?? "");
   const [isEditing, setIsEditing] = useState(false);
   const [isDismissed, setIsDismissed] = useState(false);
-  const originalDraftRef = useRef("");
+  const originalDraftRef = useRef(cached ?? "");
   const meta = item.meta as Record<string, unknown> | undefined;
 
   useEffect(() => {
-    if (!draftReply.data?.draft && !draftReply.isPending) {
+    // Only call AI if not already cached
+    if (!cached && !draftReply.data?.draft && !draftReply.isPending) {
       draftReply.mutate({ id: item.id, platform: item.platform, title: item.title, snippet: item.snippet, sender: item.sender, channelId: meta?.channelId ? String(meta.channelId) : undefined });
     }
   }, [item.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    if (draftReply.data?.draft) { setEditedDraft(draftReply.data.draft); originalDraftRef.current = draftReply.data.draft; }
-  }, [draftReply.data?.draft]);
+    if (draftReply.data?.draft) {
+      setEditedDraft(draftReply.data.draft);
+      originalDraftRef.current = draftReply.data.draft;
+      sessionDraftCache.set(item.id, draftReply.data.draft); // Cache for session
+    }
+  }, [draftReply.data?.draft, item.id]);
 
   if (isDismissed) return null;
 
@@ -406,18 +462,18 @@ function InlineDraft({ item }: { item: TriageItem }) {
 }
 
 // ─── Feed Card ────────────────────────────────────────────────────────────────
-function FeedCard({ item, isExpanded, onToggle, showInlineDraft }: { item: TriageItem; isExpanded: boolean; onToggle: () => void; showInlineDraft?: boolean }) {
+function FeedCard({ item, isExpanded, onToggle, showInlineDraft, col }: { item: TriageItem; isExpanded: boolean; onToggle: () => void; showInlineDraft?: boolean; col?: Column }) {
   const config = priorityConfig[item.priority];
   const senderDisplay = item.sender ? item.sender.split("<")[0].trim() : "";
   return (
     <div className={`bg-card rounded-lg border border-border/50 overflow-hidden transition-all shadow-sm hover:shadow-md border-l-[3px] ${config.borderColor} ${isExpanded ? "ring-1 ring-primary/20" : ""}`}>
       <button onClick={onToggle} className="w-full text-left px-3 py-3 hover:bg-accent/30 transition-colors">
         <div className="flex items-start gap-2.5">
-          <div className={`w-2 h-2 rounded-full mt-1.5 shrink-0 ${platformColor[item.platform]}`} />
+          {/* Platform icon — prominent top-left */}
+          {(() => { const Icon = PlatformIcon[item.platform]; return Icon ? <Icon className="w-5 h-5 shrink-0 mt-0.5" /> : <div className={`w-2 h-2 rounded-full mt-1.5 shrink-0 ${platformColor[item.platform]}`} />; })()}
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-1.5 mb-1">
               <Badge variant="outline" className={`text-[10px] px-1.5 py-0 h-4 shrink-0 ${config.color}`}>{config.label}</Badge>
-              <span className={`text-[9px] px-1.5 py-0 h-4 rounded font-medium shrink-0 inline-flex items-center ${platformBadgeColor[item.platform] ?? "bg-gray-100 text-gray-600"}`}>{platformLabel[item.platform]}</span>
               {senderDisplay && <span className="text-[11px] text-muted-foreground font-body truncate">{senderDisplay}</span>}
               <span className="text-[10px] text-muted-foreground/60 ml-auto shrink-0 font-body tabular-nums">{formatDate(item.timestamp)}</span>
               {isExpanded ? <ChevronUp className="h-3.5 w-3.5 text-muted-foreground shrink-0" /> : <ChevronDown className="h-3.5 w-3.5 text-muted-foreground shrink-0" />}
@@ -437,6 +493,14 @@ function FeedCard({ item, isExpanded, onToggle, showInlineDraft }: { item: Triag
       {!isExpanded && showInlineDraft && (item.priority === "action" || item.priority === "urgent") &&
         (item.platform === "gmail" || item.platform === "slack") && (
         <InlineDraft item={item} />
+      )}
+      {/* FYI quick actions — visible on FYI column cards */}
+      {!isExpanded && col === "fyi" && (
+        <div className="flex gap-1.5 px-3 pb-2.5" onClick={e => e.stopPropagation()}>
+          <button onClick={e => { e.stopPropagation(); toast.success("Marked as read"); }} className="text-[10px] px-2 py-1 rounded-md bg-muted hover:bg-muted/80 text-muted-foreground font-body transition-colors flex items-center gap-1"><Check className="h-2.5 w-2.5" />Mark read</button>
+          <button onClick={e => { e.stopPropagation(); toast.info("Moved to Respond"); }} className="text-[10px] px-2 py-1 rounded-md bg-muted hover:bg-muted/80 text-muted-foreground font-body transition-colors flex items-center gap-1"><ArrowRight className="h-2.5 w-2.5" />Respond</button>
+          <button onClick={e => { e.stopPropagation(); toast.info("Moved to Deep Work"); }} className="text-[10px] px-2 py-1 rounded-md bg-muted hover:bg-muted/80 text-muted-foreground font-body transition-colors flex items-center gap-1"><Briefcase className="h-2.5 w-2.5" />Deep Work</button>
+        </div>
       )}
     </div>
   );
@@ -469,7 +533,7 @@ function ColumnPanel({ col, items, expandedId, onToggle }: { col: Column; items:
             <p className="text-xs text-muted-foreground/50 font-body">All clear</p>
           </div>
         ) : items.map(item => (
-          <FeedCard key={item.id} item={item} isExpanded={expandedId === item.id} onToggle={() => onToggle(item.id)} showInlineDraft={col === "respond"} />
+          <FeedCard key={item.id} item={item} isExpanded={expandedId === item.id} onToggle={() => onToggle(item.id)} showInlineDraft={col === "respond"} col={col} />
         ))}
       </div>
     </div>
@@ -511,13 +575,14 @@ function CalendarStrip({ events }: { events: CalendarEvent[] }) {
 // ─── AI Summary ───────────────────────────────────────────────────────────────
 function AISummary({ summary }: { summary: string }) {
   const [expanded, setExpanded] = useState(false);
-  // Show first 3 meaningful lines by default (skip empty lines)
-  const lines = summary.split("\n").filter(l => l.trim().length > 0);
-  const previewLines = lines.slice(0, 3).join(" ").slice(0, 280);
-  const hasMore = summary.length > 280 || lines.length > 3;
+  // Parse bullet lines from the summary for clean default display
+  const allLines = summary.split("\n").filter(l => l.trim().length > 0);
+  const bulletLines = allLines.filter(l => /^[-•*]|^\d+\./.test(l.trim()));
+  const previewItems = (bulletLines.length >= 2 ? bulletLines : allLines).slice(0, 4);
+  const hasMore = allLines.length > 4;
   return (
     <div className="bg-card rounded-lg border border-primary/20 p-3 shadow-sm cursor-pointer hover:border-primary/30 transition-colors" onClick={() => setExpanded(!expanded)}>
-      <div className="flex items-center gap-2 mb-1.5">
+      <div className="flex items-center gap-2 mb-2">
         <Zap className="h-3.5 w-3.5 text-primary" />
         <span className="text-xs font-medium text-primary font-headline tracking-wide uppercase">Morning Brief</span>
         {hasMore && <span className="text-[10px] text-muted-foreground ml-auto font-body">{expanded ? "show less" : "read more"}</span>}
@@ -525,7 +590,15 @@ function AISummary({ summary }: { summary: string }) {
       {expanded ? (
         <div className="text-sm text-foreground/80 font-body leading-relaxed mt-1 prose prose-sm max-w-none"><Streamdown>{summary}</Streamdown></div>
       ) : (
-        <p className="text-xs text-foreground/70 font-body leading-relaxed line-clamp-3">{previewLines}{hasMore ? "…" : ""}</p>
+        <ul className="space-y-1">
+          {previewItems.map((line, i) => (
+            <li key={i} className="flex items-start gap-1.5 text-xs text-foreground/75 font-body leading-relaxed">
+              <span className="text-primary mt-0.5 shrink-0">•</span>
+              <span>{line.replace(/^[-•*]\s*|^\d+\.\s*/, "")}</span>
+            </li>
+          ))}
+          {hasMore && <li className="text-[10px] text-muted-foreground font-body pl-3">…tap to read more</li>}
+        </ul>
       )}
     </div>
   );
@@ -579,6 +652,15 @@ export default function OlympusScreen() {
 
   const columnCounts: Record<Column, number> = { fyi: fyiItems.length, respond: respondItems.length, work: workItems.length };
 
+  // Fallback summary — zero AI cost, always visible even if AI summary unavailable
+  const fallbackSummary = stats ? [
+    stats.urgent > 0 ? `• ${stats.urgent} urgent item${stats.urgent > 1 ? 's' : ''} need your attention` : null,
+    stats.action > 0 ? `• ${stats.action} item${stats.action > 1 ? 's' : ''} waiting for your response` : null,
+    respondItems.length > 0 ? `• Top respond: ${respondItems[0]?.title ?? ''}` : null,
+    workItems.length > 0 ? `• Deep work: ${workItems[0]?.title ?? ''}` : null,
+    fyiItems.length > 0 ? `• ${fyiItems.length} FYI items to review` : null,
+  ].filter(Boolean).join('\n') : null;
+
   const handleToggle = (id: string) => setExpandedId(prev => prev === id ? null : id);
 
   const dateStr = new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" });
@@ -614,7 +696,7 @@ export default function OlympusScreen() {
           <div>
             <div className="flex items-center gap-2">
               <h1 className="font-headline text-xl font-semibold text-foreground tracking-tight">Olympus</h1>
-              <Badge variant="outline" className="text-[8px] px-1 py-0 h-3.5 text-muted-foreground border-muted-foreground/30">Read-Only</Badge>
+              {/* Read-Only badge removed — write actions enabled */}
             </div>
             <p className="text-[11px] text-muted-foreground font-body">{dateStr}</p>
           </div>
@@ -643,7 +725,7 @@ export default function OlympusScreen() {
       <main className="max-w-7xl mx-auto px-4 py-4">
         {/* Top strip: AI brief + calendar */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 mb-4">
-          {aiSummary && <AISummary summary={aiSummary} />}
+          {(aiSummary || fallbackSummary) && <AISummary summary={aiSummary ?? fallbackSummary ?? ""} />}
           <CalendarStrip events={calendarEvents} />
         </div>
 

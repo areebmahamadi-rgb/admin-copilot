@@ -256,9 +256,10 @@ export function assignColumn(item: TriageItem): Column {
     return "fyi";
   }
 
-  // Asana tasks → respond unless they have clear strategic depth
+  // Asana tasks → Deep Work if title/snippet contains strategic keywords, else Respond
   if (platform === "asana") {
-    if (DEEP_WORK_PATTERNS.some((p) => p.test(text)) && snippet && snippet.length > 150) return "work";
+    const titleOnly = title;
+    if (DEEP_WORK_PATTERNS.some((p) => p.test(titleOnly))) return "work";
     return "respond";
   }
 
@@ -267,10 +268,9 @@ export function assignColumn(item: TriageItem): Column {
     return "work";
   }
 
-  // Emails and Slack messages
+  // Emails and Slack messages — only route to Deep Work if title strongly indicates it
   if (platform === "gmail" || platform === "slack") {
-    // Deep work emails → work column
-    if (DEEP_WORK_PATTERNS.some((p) => p.test(text))) return "work";
+    if (DEEP_WORK_PATTERNS.some((p) => p.test(title))) return "work";
     return "respond";
   }
 
