@@ -8,7 +8,7 @@ import { fetchSlackItems } from "./platforms/slack";
 import { fetchAsanaItems } from "./platforms/asana";
 import { fetchCalendarEvents } from "./platforms/calendar";
 import { triageItems } from "./triage";
-import { generateBriefSummary, generateDraftReply } from "./ai";
+import { generateBriefSummary, generateDraftReply, getConversationHistory } from "./ai";
 import type { TriageItem, MorningBrief } from "@shared/types";
 
 export const appRouter = router({
@@ -121,10 +121,20 @@ export const appRouter = router({
           title: z.string(),
           snippet: z.string(),
           sender: z.string().optional(),
+          channelId: z.string().optional(),
         })
       )
       .mutation(async ({ input }) => {
-        const draft = await generateDraftReply(input as TriageItem);
+        // Fetch conversation history for tone matching
+        let history = "";
+        if (input.sender) {
+          history = await getConversationHistory(
+            input.sender,
+            input.platform,
+            input.channelId
+          );
+        }
+        const draft = await generateDraftReply(input as TriageItem, history || undefined);
         return { draft };
       }),
   }),

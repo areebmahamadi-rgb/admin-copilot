@@ -45,6 +45,13 @@ const platformLabel: Record<string, string> = {
   calendar: "Calendar",
 };
 
+const platformBadgeColor: Record<string, string> = {
+  gmail: "bg-red-100 text-red-700",
+  slack: "bg-purple-100 text-purple-700",
+  asana: "bg-orange-100 text-orange-700",
+  calendar: "bg-blue-100 text-blue-700",
+};
+
 const priorityConfig: Record<
   Priority,
   { label: string; color: string; icon: React.ElementType }
@@ -112,10 +119,15 @@ function FeedItem({
             >
               {config.label}
             </Badge>
+            <span
+              className={`text-[9px] px-1 py-0 h-4 rounded font-medium shrink-0 inline-flex items-center ${platformBadgeColor[item.platform] ?? "bg-gray-100 text-gray-600"}`}
+            >
+              {platformLabel[item.platform]}
+            </span>
             <span className="text-[11px] text-muted-foreground font-body truncate">
               {item.sender
                 ? item.sender.split("<")[0].trim()
-                : platformLabel[item.platform]}
+                : ""}
             </span>
             <span className="text-[10px] text-muted-foreground/60 ml-auto shrink-0 font-body">
               {new Date(item.timestamp).toLocaleTimeString("en-US", {
@@ -211,12 +223,14 @@ function ActionPanel({
       !draftReply.data?.draft &&
       !draftReply.isPending
     ) {
+      const meta = item.meta as Record<string, unknown> | undefined;
       draftReply.mutate({
         id: item.id,
         platform: item.platform,
         title: item.title,
         snippet: item.snippet,
         sender: item.sender,
+        channelId: meta?.channelId ? String(meta.channelId) : undefined,
       });
     }
     // Reset dismissed state when item changes
@@ -258,6 +272,7 @@ function ActionPanel({
       title: item.title,
       snippet: item.snippet,
       sender: item.sender,
+      channelId: meta?.channelId ? String(meta.channelId) : undefined,
     });
   };
 
@@ -626,8 +641,8 @@ export default function OlympusScreen() {
             <CalendarMini events={calendarEvents} />
           </div>
 
-          {/* Slack reconnect notice */}
-          {!hasSlackItems ? (
+          {/* Slack reconnect notice — only show if no Slack data in feed */}
+          {!hasSlackItems && !brief.isLoading ? (
             <div className="shrink-0">
               <SlackNotice />
             </div>

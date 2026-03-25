@@ -34,3 +34,7 @@
 - [x] Auto-draft replies for action items — auto-triggers on select for email/slack action/urgent
 - [x] Improve triage rules — Re: from non-automated senders + snippet request detection (Ron's email now action)
 - [ ] One-click send for drafted replies (future, when read-only is lifted)
+- [x] Fix triage: DMs from real people should be "action" not "info" — Slack DMs + substantive messages auto-elevated
+- [x] Add platform badges (Email/Slack/Asana/Calendar color-coded labels) on each feed item
+- [x] Context-aware AI drafts — pulls conversation history from cache, matches tone/style
+- [x] Ensure feed is always sorted by priority (urgent > action > info > noise)

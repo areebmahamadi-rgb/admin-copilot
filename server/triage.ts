@@ -116,14 +116,17 @@ const VIP_SENDER_PATTERNS: RegExp[] = [];
 
 /**
  * Classify a single item using deterministic rules.
+ * Accepts optional meta for platform-specific signals (e.g., isDM for Slack).
  * Returns null if the rules are inconclusive (→ needs AI).
  */
 export function classifyByRules(item: {
   sender?: string;
   title: string;
   snippet: string;
+  platform?: string;
+  meta?: Record<string, unknown>;
 }): Priority | null {
-  const { sender, title, snippet } = item;
+  const { sender, title, snippet, platform, meta } = item;
   const text = `${title} ${snippet}`;
 
   // Check noise first
@@ -144,7 +147,32 @@ export function classifyByRules(item: {
     return "action";
   }
 
-  // Check action
+  // ─── Slack-specific rules ─────────────────────────────────────────
+  if (platform === "slack") {
+    // DMs from real people always need a response
+    if (meta?.isDM === true && sender) {
+      return "action";
+    }
+    // Direct mentions in channels
+    if (snippet && /\b@?areeb\b/i.test(snippet)) {
+      return "action";
+    }
+    // Any non-bot Slack message with substance is at least action-worthy
+    // (you don't get random Slack messages — they're directed at you)
+    if (sender && snippet.length > 10) {
+      return "action";
+    }
+  }
+
+  // ─── Asana-specific rules ─────────────────────────────────────────
+  if (platform === "asana") {
+    // Tasks with due dates are action items
+    if (meta?.dueDate) {
+      return "action";
+    }
+  }
+
+  // Check action keywords
   if (ACTION_SUBJECT_PATTERNS.some((p) => p.test(text))) {
     return "action";
   }
@@ -180,7 +208,11 @@ export function triageItems(
   items: Omit<TriageItem, "priority">[]
 ): TriageItem[] {
   return items.map((item) => {
-    const priority = classifyByRules(item) ?? "info";
+    const priority =
+      classifyByRules({
+        ...item,
+        meta: item.meta as Record<string, unknown> | undefined,
+      }) ?? "info";
     return { ...item, priority };
   });
 }
